@@ -1,8 +1,5 @@
 import { AstNode, Grammar, GrammarAST, isAstNode, isReference } from 'langium';
-
-export interface PrintContext {
-  indent: string;
-}
+import { GrammarExtension } from './GrammarExtension';
 
 class AstNodePropertyGetter {
   private node;
@@ -28,37 +25,36 @@ class AstNodePropertyGetter {
   }
 }
 
-export function printAst(node: AstNode, grammar: Grammar, context: PrintContext = { indent: '' }) {
+export function printAst(node: AstNode, grammar: Grammar, grammarExtension?: GrammarExtension) {
   const rule = grammar.rules.find((r) => GrammarAST.isParserRule(r) && r.name === node.$type);
   if (!rule) {
     throw new Error(`Rule not found for ${node.$type}`);
   }
-  const result = printElement(new AstNodePropertyGetter(node), grammar, rule.definition, context);
+  const result = printElement(new AstNodePropertyGetter(node), grammar, grammarExtension ?? {}, rule.definition);
   return indent(result?.trim().replace(/[ ]+$/gm, '') ?? '') + '\n';
 }
 
 function printElement(
   node: AstNodePropertyGetter,
   grammar: Grammar,
+  grammarExtension: GrammarExtension,
   element: GrammarAST.AbstractElement,
-  context: PrintContext,
 ): string | undefined {
-  // console.log(element);
   if (GrammarAST.isGroup(element)) {
-    return repeat(node, grammar, element, context, printGroup);
+    return repeat(node, grammar, grammarExtension, element, printGroup);
   }
   if (GrammarAST.isAlternatives(element)) {
-    return repeat(node, grammar, element, context, printAlternatives);
+    return repeat(node, grammar, grammarExtension, element, printAlternatives);
   }
   if (GrammarAST.isAssignment(element)) {
-    return repeat(node, grammar, element, context, printAssignment);
+    return repeat(node, grammar, grammarExtension, element, printAssignment);
   }
   if (GrammarAST.isRuleCall(element)) {
     if (element.rule.ref?.name === '_NL') {
       return '\n';
     }
     if (element.rule.ref?.fragment || node.type() === element.rule.ref?.name) {
-      return repeat(node, grammar, element.rule.ref?.definition, context, printElement, element.cardinality);
+      return repeat(node, grammar, grammarExtension, element.rule.ref?.definition, printElement, element.cardinality);
     } else {
       return undefined;
     }
@@ -75,12 +71,12 @@ function printElement(
 function printGroup(
   node: AstNodePropertyGetter,
   grammar: Grammar,
+  grammarExtension: GrammarExtension,
   element: GrammarAST.Group,
-  context: PrintContext,
 ): string | undefined {
   const results: string[] = [];
   for (const el of element.elements) {
-    const value = printElement(node, grammar, el, context);
+    const value = printElement(node, grammar, grammarExtension, el);
     if (value === undefined) {
       return undefined;
     }
@@ -92,11 +88,11 @@ function printGroup(
 function printAlternatives(
   node: AstNodePropertyGetter,
   grammar: Grammar,
+  grammarExtension: GrammarExtension,
   element: GrammarAST.Alternatives,
-  context: PrintContext,
 ): string | undefined {
   for (const el of element.elements) {
-    const value = printElement(node, grammar, el, context);
+    const value = printElement(node, grammar, grammarExtension, el);
     if (value !== undefined) {
       return value;
     }
@@ -107,8 +103,8 @@ function printAlternatives(
 function printAssignment(
   node: AstNodePropertyGetter,
   grammar: Grammar,
+  grammarExtension: GrammarExtension,
   element: GrammarAST.Assignment,
-  context: PrintContext,
 ): string | undefined {
   if (GrammarAST.isRuleCall(element.terminal)) {
     const value = node.get(element.feature);
@@ -116,10 +112,26 @@ function printAssignment(
       return undefined;
     }
     if (GrammarAST.isParserRule(element.terminal.rule.ref)) {
-      if (!isAstNode(value)) {
-        throw new Error(`Expected AST node but got '${value}' with type ${typeof value}`);
+      if (element.terminal.rule.ref.dataType) {
+        const print = grammarExtension[element.terminal.rule.ref.name]?.value?.print;
+        if (print) {
+          return print ? print(value) : value.toString();
+        }
+        if (element.terminal.rule.ref.dataType === 'number') {
+          return value.toString();
+        }
+        throw new Error(`Unsupported value '${value}' with type ${typeof value}`);
+      } else {
+        if (!isAstNode(value)) {
+          throw new Error(`Expected AST node but got '${value}' with type ${typeof value}`);
+        }
+        return printElement(
+          new AstNodePropertyGetter(value),
+          grammar,
+          grammarExtension,
+          element.terminal.rule.ref.definition,
+        );
       }
-      return printElement(new AstNodePropertyGetter(value), grammar, element.terminal.rule.ref.definition, context);
     }
     if (GrammarAST.isTerminalRule(element.terminal.rule.ref)) {
       if (typeof value === 'string') {
@@ -165,16 +177,21 @@ const MAX_REPEAT_COUNT = 10000;
 function repeat<T extends GrammarAST.AbstractElement>(
   node: AstNodePropertyGetter,
   grammar: Grammar,
+  grammarExtension: GrammarExtension,
   element: T,
-  context: PrintContext,
-  func: (node: AstNodePropertyGetter, grammar: Grammar, element: T, context: PrintContext) => string | undefined,
+  func: (
+    node: AstNodePropertyGetter,
+    grammar: Grammar,
+    grammarExtension: GrammarExtension,
+    element: T,
+  ) => string | undefined,
   cardinality?: '*' | '+' | '?',
 ) {
   const results: string[] = [];
   const many = cardinality === '*' || cardinality === '+' || element.cardinality === '*' || element.cardinality === '+';
   let i = 0;
   do {
-    const value = func(node, grammar, element, context);
+    const value = func(node, grammar, grammarExtension, element);
     if (value === undefined) {
       break;
     }
@@ -195,9 +212,14 @@ function join(strings: string[]) {
       !result.length ||
       result.endsWith('\n') ||
       result.endsWith('(') ||
+      result.endsWith('[') ||
+      result.endsWith('.') ||
       str.startsWith(',') ||
+      str.startsWith('.') ||
       str.startsWith('(') ||
-      str.startsWith(')')
+      str.startsWith(')') ||
+      str.startsWith('[') ||
+      str.startsWith(']')
     ) {
       result += str;
     } else if (str) {

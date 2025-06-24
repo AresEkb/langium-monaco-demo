@@ -1,13 +1,5 @@
-import { AstNode, GrammarAST } from 'langium';
-import { CompletionContext, DefaultCompletionProvider } from 'langium/lsp';
-import {
-  BrowserMessageReader,
-  BrowserMessageWriter,
-  Connection,
-  createConnection,
-  Diagnostic,
-  NotificationType,
-} from 'vscode-languageserver/browser';
+import { AstNode } from 'langium';
+import { Diagnostic, NotificationType } from 'vscode-languageserver/browser';
 import { EModel } from './Model';
 
 export const documentChange = 'browser/DocumentChange';
@@ -30,15 +22,3 @@ export interface ModelDocumentChange {
 }
 
 export const modelDocumentChangeNotification = new NotificationType<ModelDocumentChange>(modelDocumentChange);
-
-export function createServerConnection(): Connection {
-  const messageReader = new BrowserMessageReader(self);
-  const messageWriter = new BrowserMessageWriter(self);
-  return createConnection(messageReader, messageWriter);
-}
-
-export class DslCompletionProvider extends DefaultCompletionProvider {
-  protected override filterKeyword(_context: CompletionContext, keyword: GrammarAST.Keyword): boolean {
-    return keyword.value !== '__NL__';
-  }
-}

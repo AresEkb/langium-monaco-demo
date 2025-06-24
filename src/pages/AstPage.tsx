@@ -3,6 +3,7 @@ import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import { AstNode } from 'langium';
 import { useState } from 'react';
 import { dslGrammar } from '../dsl/grammar';
+import { dslGrammarExtension } from '../dsl/grammarExtension';
 import { dslSample } from '../dsl/sample';
 import { useDebounced } from '../hooks/useDebounced';
 import { LangiumEditor, LangiumEditorValue } from '../langium/LangiumEditor';
@@ -26,6 +27,7 @@ export function AstPage() {
         uri="file:///code"
         language="dsl"
         grammar={dslGrammar}
+        grammarExtension={dslGrammarExtension}
         value={dslSample}
         onChange={onChange}
         excludeText

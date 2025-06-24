@@ -1,78 +1,45 @@
-import { DocumentState } from 'langium';
-import { createServicesForGrammar } from 'langium/grammar';
-import { LangiumServices, startLanguageServer } from 'langium/lsp';
-import { Connection, DiagnosticSeverity, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import { DslServer } from './DslServer.js';
 
-import {
-  createServerConnection,
-  DocumentChange,
-  documentChangeNotification,
-  DslCompletionProvider,
-} from './workerUtils.js';
+let server: DslServer | undefined = undefined;
 
-addEventListener('message', async (event) => {
-  if (event.data.type === 'start') {
-    if (typeof event.data.grammar !== 'string') {
-      throw new Error('Grammar should be a string');
-    }
-    await start(event.data.grammar, event.data.excludeText ?? false, event.data.includeAst ?? false);
-  } else if (event.data.type === 'setValue') {
-    if (typeof event.data.uri !== 'string') {
-      throw new Error('URI should be a string');
-    }
-    if (typeof event.data.value !== 'string') {
-      throw new Error('Value should be a string');
-    }
-    setValue(event.data.uri, event.data.value);
+addEventListener('message', (event) => {
+  switch (event.data.type) {
+    case 'start':
+      start(event.data);
+      break;
+    case 'setValue':
+      setValue(event.data);
+      break;
   }
 });
 
-let connection: Connection;
-
-async function start(grammar: string, excludeText: boolean, includeAst: boolean): Promise<void> {
-  connection = createServerConnection();
-
-  const { shared, serializer } = await createServicesForGrammar({
-    grammar,
-    module: {
-      lsp: {
-        CompletionProvider: (services: LangiumServices) => new DslCompletionProvider(services),
-      },
-    },
-    sharedModule: {
-      lsp: {
-        Connection: () => connection,
-      },
-    },
-  });
-
-  shared.workspace.DocumentBuilder.onBuildPhase(DocumentState.Validated, (documents) => {
-    for (const document of documents) {
-      if (document.diagnostics?.some((d) => d.severity === DiagnosticSeverity.Error)) {
-        continue;
-      }
-      const params: DocumentChange = {
-        uri: document.uri.toString(),
-        diagnostics: document.diagnostics ?? [],
-      };
-      if (!excludeText) {
-        params.text = document.textDocument.getText();
-      }
-      if (includeAst) {
-        params.ast = JSON.parse(serializer.JsonSerializer.serialize(document.parseResult.value, { refText: true }));
-      }
-      connection.sendNotification(documentChangeNotification, params);
-    }
-  });
-
-  startLanguageServer(shared);
+async function start(data: Record<string, unknown>) {
+  if (typeof data.grammar !== 'string') {
+    throw new Error('Grammar should be a string');
+  }
+  if (data.grammarExtension !== undefined && typeof data.grammarExtension !== 'string') {
+    throw new Error('Grammar extension should be undefined or a string');
+  }
+  if (data.excludeText !== undefined && typeof data.excludeText !== 'boolean') {
+    throw new Error('Exclude text should be undefined or a boolean');
+  }
+  if (data.includeAst !== undefined && typeof data.includeAst !== 'boolean') {
+    throw new Error('Include AST should be undefined or a boolean');
+  }
+  server = new DslServer(data.grammar, data.grammarExtension, data.excludeText ?? false, data.includeAst ?? false);
+  await server.start();
   postMessage({ type: 'started' });
 }
 
-function setValue(uri: string, value: string) {
-  connection.workspace.applyEdit({
-    changes: {
-      [uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), value)],
-    },
-  });
+function setValue(data: Record<string, unknown>) {
+  if (typeof data.uri !== 'string') {
+    throw new Error('URI should be a string');
+  }
+  if (typeof data.value !== 'string') {
+    throw new Error('Value should be a string');
+  }
+  if (!server) {
+    throw new Error('Server should be started');
+  }
+  server.setValue(data.uri, data.value);
 }

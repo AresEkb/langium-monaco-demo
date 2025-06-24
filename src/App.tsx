@@ -1,7 +1,7 @@
 import { HashRouter, NavLink, Route, Routes } from 'react-router';
-
 import { AstPage } from './pages/AstPage';
 import { EditorPage } from './pages/EditorPage';
+import { ExtensionPage } from './pages/ExtensionPage';
 import { GrammarPage } from './pages/GrammarPage';
 import { ModelPage } from './pages/ModelPage';
 import { PrintPage } from './pages/PrintPage';
@@ -28,6 +28,9 @@ export function App() {
               <NavLink to="/grammar">Grammar</NavLink>
             </li>
             <li>
+              <NavLink to="/extension">Extension</NavLink>
+            </li>
+            <li>
               <NavLink to="/model">Model</NavLink>
             </li>
           </ul>
@@ -38,6 +41,7 @@ export function App() {
         <Route path="ast" element={<AstPage />} />
         <Route path="print" element={<PrintPage />} />
         <Route path="grammar" element={<GrammarPage />} />
+        <Route path="extension" element={<ExtensionPage />} />
         <Route path="model" element={<ModelPage />} />
       </Routes>
     </HashRouter>

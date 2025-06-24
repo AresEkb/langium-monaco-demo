@@ -3,10 +3,11 @@ import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import { AstNode } from 'langium';
 import { createServicesForGrammar } from 'langium/grammar';
 import { useState } from 'react';
-
-import { dslGrammar } from '../dsl/grammar';
+import { extendedDslGrammar } from '../dsl/extendedGrammar';
+import { dslGrammarExtension } from '../dsl/grammarExtension';
 import { dslSample } from '../dsl/sample';
 import { useDebounced } from '../hooks/useDebounced';
+import { parseGrammarExtension } from '../langium/GrammarExtension';
 import { LangiumEditor, LangiumEditorValue } from '../langium/LangiumEditor';
 import { printAst } from '../langium/print';
 
@@ -23,8 +24,8 @@ export function PrintPage() {
       return value.ast;
     });
     if (value.ast) {
-      const { Grammar } = await createServicesForGrammar({ grammar: dslGrammar });
-      setGeneratedContent(printAst(value.ast, Grammar));
+      const { Grammar } = await createServicesForGrammar({ grammar: extendedDslGrammar });
+      setGeneratedContent(printAst(value.ast, Grammar, parseGrammarExtension(dslGrammarExtension)));
     }
   }, 500);
 
@@ -34,13 +35,20 @@ export function PrintPage() {
         uri="file:///code"
         value={dslSample}
         language="dsl"
-        grammar={dslGrammar}
+        grammar={extendedDslGrammar}
+        grammarExtension={dslGrammarExtension}
         onChange={onChange}
         excludeText
         includeAst
       />
       <div className="json-diff" dangerouslySetInnerHTML={{ __html: astDiff ?? '' }} />
-      <LangiumEditor uri="file:///code2" value={generatedContent} language="dsl2" grammar={dslGrammar} />
+      <LangiumEditor
+        uri="file:///code2"
+        value={generatedContent}
+        language="dsl2"
+        grammar={extendedDslGrammar}
+        grammarExtension={dslGrammarExtension}
+      />
     </main>
   );
 }

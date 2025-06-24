@@ -1,4 +1,4 @@
-export const dslSample = `@name('ru-RU', 'Модель данных интернет-магазина')
+export const simplifiedDslSample = `@name('ru-RU', 'Модель данных интернет-магазина')
 classModel OnlineStore
 
 @name('ru-RU', 'пользователь')
@@ -28,7 +28,7 @@ class Order {
   reference user User
 
   @name('ru-RU', 'элементы заказа')
-  reference items OrderItem[0..*] opposite order
+  reference items OrderItem[0..*]
 
 }
 
@@ -36,7 +36,7 @@ class Order {
 class OrderItem {
 
   @name('ru-RU', 'заказ')
-  reference order Order opposite items
+  reference order Order
 
   @name('ru-RU', 'продукт')
   reference product Product

@@ -1,15 +1,15 @@
-export const dslGrammar = `grammar ClassModel
+export const extendedDslGrammar = `grammar ClassModel
 
 entry ClassModel:
-    Localization*
+    _NL? Localization* _NL?
     'classModel' name=ID
     (classes+=Class | dataTypes+=DataType)*;
 
 Class:
-    Localization*
+    _NL? Localization* _NL?
     kind=ClassKind name=ID ('extends' generals+=[Class:ID] (',' generals+=[Class:ID])*)? ('{'
         properties+=Property*
-    '}')?;
+    _NL? _NL? '}')?;
 
 ClassKind:
     {infer ClassKind__Regular} 'class' |
@@ -20,11 +20,11 @@ Property:
     Attribute | Reference;
 
 Attribute:
-    Localization*
+    _NL? Localization* _NL?
     'attribute' name=ID dataType=[DataType:ID] Multiplicity?;
 
 Reference:
-    Localization*
+    _NL? Localization* _NL?
     'reference' name=ID target=[Class:ID] Multiplicity? ('opposite' opposite=[Reference:ID])?;
 
 fragment Multiplicity:
@@ -34,40 +34,40 @@ DataType:
     StringType | NumericType | BooleanType | TimeType | UuidType | EnumeratedType;
 
 StringType:
-    Localization*
+    _NL? Localization* _NL?
     'string' name=ID ('{'
-        ('length' length=Natural)?
-        ('minLength' minLength=Natural)?
-        ('maxLength' maxLength=Natural)?
-        ('pattern' pattern=STRING)?
-    '}')?;
+        (_NL? 'length' length=Natural)?
+        (_NL? 'minLength' minLength=Natural)?
+        (_NL? 'maxLength' maxLength=Natural)?
+        (_NL? 'pattern' pattern=STRING)?
+    _NL? '}')?;
 
 NumericType:
-    Localization*
+    _NL? Localization* _NL?
     'numeric' name=ID ('{'
-        ('size' size=Natural)?
-        ('totalDigits' totalDigits=Natural)?
-        ('fractionDigits' fractionDigits=Natural)?
-        ('minInclusive' minInclusive=Numeric)?
-        ('minExclusive' minExclusive=Numeric)?
-        ('maxInclusive' maxInclusive=Numeric)?
-        ('maxExclusive' maxExclusive=Numeric)?
-        ('measurementUnit' pattern=STRING)?
-    '}')?;
+        (_NL? 'size' size=Natural)?
+        (_NL? 'totalDigits' totalDigits=Natural)?
+        (_NL? 'fractionDigits' fractionDigits=Natural)?
+        (_NL? 'minInclusive' minInclusive=Numeric)?
+        (_NL? 'minExclusive' minExclusive=Numeric)?
+        (_NL? 'maxInclusive' maxInclusive=Numeric)?
+        (_NL? 'maxExclusive' maxExclusive=Numeric)?
+        (_NL? 'measurementUnit' pattern=STRING)?
+    _NL? '}')?;
 
 BooleanType:
-    Localization*
-    'boolean' name=ID ('{' '}')?;
+    _NL? Localization* _NL?
+    'boolean' name=ID ('{' _NL? '}')?;
 
 TimeType:
-    Localization*
+    _NL? Localization* _NL?
     'time' name=ID ('{'
-        ('instantUnits' instantUnits+=TimeUnit+)?
-        ('instantFractionDigits' instantFractionDigits=Natural)?
-        ('durationUnits' durationUnits+=TimeUnit+)?
-        ('durationFractionDigits' durationFractionDigits=Natural)?
-        ('recurrence' recurrence=TimeUnit)?
-    '}')?;
+        (_NL? 'instantUnits' instantUnits+=TimeUnit+)?
+        (_NL? 'instantFractionDigits' instantFractionDigits=Natural)?
+        (_NL? 'durationUnits' durationUnits+=TimeUnit+)?
+        (_NL? 'durationFractionDigits' durationFractionDigits=Natural)?
+        (_NL? 'recurrence' recurrence=TimeUnit)?
+    _NL? '}')?;
 
 TimeUnit:
     {infer TimeUnit__Year} 'year' |
@@ -80,22 +80,22 @@ TimeUnit:
     {infer TimeUnit__Second} 'second';
 
 UuidType:
-    Localization*
-    'uuid' name=ID ('{' '}')?;
+    _NL? Localization* _NL?
+    'uuid' name=ID ('{' _NL? '}')?;
 
 EnumeratedType:
-    Localization*
+    _NL? Localization* _NL?
     'enumerated' name=ID ('{'
         literals+=EnumeratedTypeLiteral*
-    '}')?;
+    _NL? _NL? '}')?;
 
 EnumeratedTypeLiteral:
-    Localization*
+    _NL? Localization* _NL?
     name=ID;
 
 fragment Localization:
-    '@name' '(' localizedName+=Ecore_EStringToStringMapEntry ')' |
-    '@description' '(' localizedDescription+=Ecore_EStringToStringMapEntry ')';
+    _NL? '@name' '(' localizedName+=Ecore_EStringToStringMapEntry ')' |
+    _NL? '@description' '(' localizedDescription+=Ecore_EStringToStringMapEntry ')';
 
 Ecore_EStringToStringMapEntry:
     key=STRING ',' value=STRING;
@@ -108,6 +108,8 @@ Natural returns number:
 
 UnlimitedNatural returns number:
     INT | '*';
+
+_NL returns string: '__NL__';
 
 terminal ID: /[_a-zA-Z][\\w_]*/;
 terminal STRING: /'(\\\\.|[^'])*'/;

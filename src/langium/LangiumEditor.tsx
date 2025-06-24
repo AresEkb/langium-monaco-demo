@@ -12,6 +12,7 @@ export interface LangiumEditorProps {
   uri: string;
   language: string;
   grammar: string;
+  grammarExtension?: string;
   value?: string;
   onChange?: (value: LangiumEditorValue) => void;
   excludeText?: boolean;
@@ -32,7 +33,7 @@ export function LangiumEditor(props: LangiumEditorProps) {
   useEffect(() => {
     let mounted = true;
     async function init() {
-      worker.current = await createWorker(props.grammar, props.excludeText, props.includeAst);
+      worker.current = await createWorker(props.grammar, props.grammarExtension, props.excludeText, props.includeAst);
       const { Grammar } = await createServicesForGrammar({ grammar: props.grammar });
       const textmateGrammar = generateTextMate(Grammar, { id: props.language, grammar: '' });
       if (mounted) {
@@ -84,7 +85,12 @@ export function LangiumEditor(props: LangiumEditorProps) {
   return <MemoizedMonacoEditorReactComp className={props.className} wrapperConfig={config} onLoad={onLoad} />;
 }
 
-function createWorker(grammar: string, excludeText?: boolean, includeAst?: boolean): Promise<Worker> {
+function createWorker(
+  grammar: string,
+  grammarExtension?: string,
+  excludeText?: boolean,
+  includeAst?: boolean,
+): Promise<Worker> {
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL('./LangiumEditorWorker.ts', import.meta.url), { type: 'module' });
     worker.onmessage = (event) => {
@@ -93,6 +99,6 @@ function createWorker(grammar: string, excludeText?: boolean, includeAst?: boole
       }
     };
     worker.onerror = reject;
-    worker.postMessage({ type: 'start', grammar, excludeText, includeAst });
+    worker.postMessage({ type: 'start', grammar, grammarExtension, excludeText, includeAst });
   });
 }
