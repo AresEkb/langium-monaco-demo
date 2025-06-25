@@ -5,9 +5,9 @@ export type GrammarExtension = Record<string, Record<string, PropertyExtension>>
 export interface PropertyExtension {
   normalize?: (node: IdAstNode) => IdAstNode;
   denormalize?: (node: IdAstNode) => IdAstNode;
+  scopes?: (node: IdAstNode) => IdAstNode[];
   parse?: (value: string) => ValueType;
   print?: (value: ValueType) => string;
-  scopes?: (node: IdAstNode) => IdAstNode[];
 }
 
 export interface IdAstNode extends AstNode {

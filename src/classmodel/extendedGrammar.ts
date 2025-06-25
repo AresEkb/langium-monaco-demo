@@ -1,4 +1,4 @@
-export const extendedDslGrammar = `grammar ClassModel
+export const extendedClassModelGrammar = `grammar ClassModel
 
 entry ClassModel:
     _NL? Localization* _NL?

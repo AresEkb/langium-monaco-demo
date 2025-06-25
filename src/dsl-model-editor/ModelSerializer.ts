@@ -1,11 +1,11 @@
-import { AstNode, Grammar, GrammarAST } from 'langium';
+import { AstNode, Grammar, GrammarAST, ValueType } from 'langium';
 import {
   GrammarExtension,
   IdAstNode,
   isEntityAstNode,
   isEnumLiteralAstNode,
   isReferenceAstNode,
-} from './GrammarExtension';
+} from '../dsl-editor/GrammarExtension';
 import { EFeatureType, EModel, EObject, isEObject } from './Model';
 
 export class ModelSerializer {
@@ -54,22 +54,19 @@ export interface ModelDeserializeOptions {
 }
 
 function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, namespacePrefix: string): EObject {
-  // const toModel = grammarExtension[node.$type]?.toModel;
-  // const normalizedNode = toModel ? toModel(node) : node;
-  const normalizedNode = node;
-  const pos = normalizedNode.$type.indexOf('_');
+  const pos = node.$type.indexOf('_');
   const eClass =
     pos >= 0
-      ? normalizedNode.$type.substring(0, pos).toLowerCase() + ':' + normalizedNode.$type.substring(pos + 1)
-      : namespacePrefix + ':' + normalizedNode.$type;
-  if (normalizedNode.$id === undefined) {
+      ? node.$type.substring(0, pos).toLowerCase() + ':' + node.$type.substring(pos + 1)
+      : namespacePrefix + ':' + node.$type;
+  if (node.$id === undefined) {
     throw new Error();
   }
   return {
-    id: normalizedNode.$id,
+    id: node.$id,
     eClass,
     data: Object.fromEntries(
-      Object.entries(normalizedNode)
+      Object.entries(node)
         .filter(([name]) => !name.startsWith('$'))
         .map(([name, value]) => [name, serializeValue(value, getAstNode, namespacePrefix)])
         .filter(([, value]) => value !== undefined),
@@ -78,7 +75,7 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
 }
 
 function serializeValue(
-  node: unknown,
+  node: ValueType,
   getAstNode: (id: string) => IdAstNode,
   namespacePrefix: string,
 ): EFeatureType | EFeatureType[] | undefined {
@@ -115,7 +112,7 @@ function deserializeNode(
   if (!rule) {
     throw new Error(`Rule not found for ${type}`);
   }
-  const result: IdAstNode = {
+  return {
     $id: node.id,
     $type: rule.name,
     ...Object.fromEntries(
@@ -125,9 +122,6 @@ function deserializeNode(
       ]),
     ),
   };
-  // const toAst = processors[result.$type]?.toAst;
-  // return toAst ? toAst(result) : result;
-  return result;
 }
 
 function deserializeValue(
@@ -147,7 +141,7 @@ function deserializeValue(
       }
     }
     if (GrammarAST.isCrossReference(element)) {
-      return { $refText: getObject(node).data.name };
+      return { $refText: getObject(node).data.name as string };
     }
     return node;
   }

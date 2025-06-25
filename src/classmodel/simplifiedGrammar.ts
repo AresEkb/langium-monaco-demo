@@ -1,4 +1,4 @@
-export const dslGrammar = `grammar ClassModel
+export const simplifiedClassModelGrammar = `grammar ClassModel
 
 entry ClassModel:
     Localization*
@@ -21,14 +21,11 @@ Property:
 
 Attribute:
     Localization*
-    'attribute' name=ID dataType=[DataType:ID] Multiplicity?;
+    'attribute' name=ID dataType=[DataType:ID];
 
 Reference:
     Localization*
-    'reference' name=ID target=[Class:ID] Multiplicity? ('opposite' opposite=[Reference:ID])?;
-
-fragment Multiplicity:
-    '[' lower=Natural ('..' upper=UnlimitedNatural)? ']';
+    'reference' name=ID target=[Class:ID];
 
 DataType:
     StringType | NumericType | BooleanType | TimeType | UuidType | EnumeratedType;
@@ -105,9 +102,6 @@ Numeric returns number:
 
 Natural returns number:
     INT;
-
-UnlimitedNatural returns number:
-    INT | '*';
 
 terminal ID: /[_a-zA-Z][\\w_]*/;
 terminal STRING: /'(\\\\.|[^'])*'/;

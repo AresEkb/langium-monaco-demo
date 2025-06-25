@@ -1,17 +1,17 @@
-import { dslGrammar } from '../dsl/grammar';
-import { dslGrammarExtension } from '../dsl/grammarExtension';
-import { dslSample } from '../dsl/sample';
-import { LangiumEditor } from '../langium/LangiumEditor';
+import { classModelGrammar } from '../classmodel/grammar';
+import { classModelGrammarExtension } from '../classmodel/grammarExtension';
+import { classModelText } from '../classmodel/text';
+import { DslEditor } from '../dsl-editor/DslEditor';
 
 export function EditorPage() {
   return (
     <main>
-      <LangiumEditor
+      <DslEditor
         uri="file:///code"
         language="dsl"
-        grammar={dslGrammar}
-        grammarExtension={dslGrammarExtension}
-        value={dslSample}
+        grammar={classModelGrammar}
+        grammarExtension={classModelGrammarExtension}
+        value={classModelText}
       />
     </main>
   );

@@ -1,10 +1,10 @@
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
 import { TextContents, WrapperConfig } from 'monaco-editor-wrapper';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { createConfig } from './config';
-import { langiumGrammarTextmate } from './langiumGrammarTextmate';
+import { createConfig } from '../dsl-editor/config';
+import { dslGrammarTextmate } from './dslGrammarTextmate';
 
-export interface LangiumGrammarEditorProps {
+export interface DslGrammarEditorProps {
   className?: string;
   uri: string;
   value?: string;
@@ -13,18 +13,17 @@ export interface LangiumGrammarEditorProps {
 
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
-export function LangiumGrammarEditor(props: LangiumGrammarEditorProps) {
+export function DslGrammarEditor(props: DslGrammarEditorProps) {
   const [config, setConfig] = useState<WrapperConfig>();
 
   useEffect(() => {
     let mounted = true;
-    let worker: Worker | undefined = new Worker(new URL('./LangiumGrammarEditorWorker.ts', import.meta.url), {
+    let worker: Worker | undefined = new Worker(new URL('./DslGrammarEditorWorker.ts', import.meta.url), {
       type: 'module',
     });
-    const textmateGrammar = JSON.stringify(langiumGrammarTextmate);
     if (mounted) {
       setConfig(
-        createConfig(props.uri, props.value ?? '', 'langium', textmateGrammar, {
+        createConfig(props.uri, props.value ?? '', 'langium', dslGrammarTextmate, {
           $type: 'WorkerDirect',
           worker,
         }),

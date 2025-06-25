@@ -1,4 +1,4 @@
-export const langiumGrammarTextmate = {
+export const dslGrammarTextmate = `{
   name: 'Langium',
   scopeName: 'source.langium',
   fileTypes: ['langium'],
@@ -290,4 +290,4 @@ export const langiumGrammarTextmate = {
       ],
     },
   },
-};
+}`;

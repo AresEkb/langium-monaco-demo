@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { simplifiedDslGrammar } from '../dsl/simplifiedGrammar';
-import { simplifiedDslSample } from '../dsl/simplifiedSample';
+import { simplifiedClassModelGrammar } from '../classmodel/simplifiedGrammar';
+import { simplifiedClassModelText } from '../classmodel/simplifiedText';
+import { DslEditor } from '../dsl-editor/DslEditor';
+import { DslGrammarEditor } from '../dsl-grammar-editor/DslGrammarEditor';
 import { useDebounced } from '../hooks/useDebounced';
-import { LangiumEditor } from '../langium/LangiumEditor';
-import { LangiumGrammarEditor } from '../langium/LangiumGrammarEditor';
 
 export function GrammarPage() {
-  const [grammar, setGrammar] = useState(simplifiedDslGrammar);
+  const [grammar, setGrammar] = useState(simplifiedClassModelGrammar);
   const onGrammarChanged = useDebounced(setGrammar, 500);
   return (
     <main>
-      <LangiumGrammarEditor uri="file:///grammar" value={grammar} onChange={onGrammarChanged} />
-      <LangiumEditor uri="file:///code" value={simplifiedDslSample} language="dsl" grammar={grammar} />
+      <DslGrammarEditor uri="file:///grammar" value={grammar} onChange={onGrammarChanged} />
+      <DslEditor uri="file:///code" value={simplifiedClassModelText} language="dsl" grammar={grammar} />
     </main>
   );
 }

@@ -2,11 +2,11 @@ import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import { AstNode } from 'langium';
 import { useState } from 'react';
-import { dslGrammar } from '../dsl/grammar';
-import { dslGrammarExtension } from '../dsl/grammarExtension';
-import { dslSample } from '../dsl/sample';
+import { classModelGrammar } from '../classmodel/grammar';
+import { classModelGrammarExtension } from '../classmodel/grammarExtension';
+import { classModelText } from '../classmodel/text';
+import { DslEditor, DslEditorValue } from '../dsl-editor/DslEditor';
 import { useDebounced } from '../hooks/useDebounced';
-import { LangiumEditor, LangiumEditorValue } from '../langium/LangiumEditor';
 
 const jsonDiffPatch = createJsonDiffPatch();
 
@@ -14,7 +14,7 @@ export function AstPage() {
   const [, setAst] = useState<AstNode>();
   const [astDiff, setAstDiff] = useState<string>();
 
-  const onChange = useDebounced((value: LangiumEditorValue) => {
+  const onChange = useDebounced((value: DslEditorValue) => {
     setAst((ast) => {
       setAstDiff(formatJsonDiff(jsonDiffPatch.diff(ast, value.ast) ?? {}, ast));
       return value.ast;
@@ -23,12 +23,12 @@ export function AstPage() {
 
   return (
     <main>
-      <LangiumEditor
+      <DslEditor
         uri="file:///code"
         language="dsl"
-        grammar={dslGrammar}
-        grammarExtension={dslGrammarExtension}
-        value={dslSample}
+        grammar={classModelGrammar}
+        grammarExtension={classModelGrammarExtension}
+        value={classModelText}
         onChange={onChange}
         excludeText
         includeAst

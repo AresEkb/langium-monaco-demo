@@ -1,4 +1,4 @@
-export const simplifiedDslGrammar = `grammar ClassModel
+export const classModelGrammar = `grammar ClassModel
 
 entry ClassModel:
     Localization*
@@ -25,7 +25,7 @@ Attribute:
 
 Reference:
     Localization*
-    'reference' name=ID target=[Class:ID] Multiplicity?;
+    'reference' name=ID target=[Class:ID] Multiplicity? ('opposite' opposite=[Reference:ID])?;
 
 fragment Multiplicity:
     '[' lower=Natural ('..' upper=UnlimitedNatural)? ']';

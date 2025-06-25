@@ -3,13 +3,13 @@ import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import { AstNode } from 'langium';
 import { createServicesForGrammar } from 'langium/grammar';
 import { useState } from 'react';
-import { extendedDslGrammar } from '../dsl/extendedGrammar';
-import { dslGrammarExtension } from '../dsl/grammarExtension';
-import { dslSample } from '../dsl/sample';
+import { extendedClassModelGrammar } from '../classmodel/extendedGrammar';
+import { classModelGrammarExtension } from '../classmodel/grammarExtension';
+import { classModelText } from '../classmodel/text';
+import { DslEditor, DslEditorValue } from '../dsl-editor/DslEditor';
+import { parseGrammarExtension } from '../dsl-editor/GrammarExtension';
+import { printAst } from '../dsl-editor/print';
 import { useDebounced } from '../hooks/useDebounced';
-import { parseGrammarExtension } from '../langium/GrammarExtension';
-import { LangiumEditor, LangiumEditorValue } from '../langium/LangiumEditor';
-import { printAst } from '../langium/print';
 
 const jsonDiffPatch = createJsonDiffPatch();
 
@@ -18,36 +18,36 @@ export function PrintPage() {
   const [astDiff, setAstDiff] = useState<string>();
   const [generatedContent, setGeneratedContent] = useState<string>();
 
-  const onChange = useDebounced(async (value: LangiumEditorValue) => {
+  const onChange = useDebounced(async (value: DslEditorValue) => {
     setAst((ast) => {
       setAstDiff(formatJsonDiff(jsonDiffPatch.diff(ast, value.ast) ?? {}, ast));
       return value.ast;
     });
     if (value.ast) {
-      const { Grammar } = await createServicesForGrammar({ grammar: extendedDslGrammar });
-      setGeneratedContent(printAst(value.ast, Grammar, parseGrammarExtension(dslGrammarExtension)));
+      const { Grammar } = await createServicesForGrammar({ grammar: extendedClassModelGrammar });
+      setGeneratedContent(printAst(value.ast, Grammar, parseGrammarExtension(classModelGrammarExtension)));
     }
   }, 500);
 
   return (
     <main>
-      <LangiumEditor
+      <DslEditor
         uri="file:///code"
-        value={dslSample}
         language="dsl"
-        grammar={extendedDslGrammar}
-        grammarExtension={dslGrammarExtension}
+        grammar={extendedClassModelGrammar}
+        grammarExtension={classModelGrammarExtension}
+        value={classModelText}
         onChange={onChange}
         excludeText
         includeAst
       />
       <div className="json-diff" dangerouslySetInnerHTML={{ __html: astDiff ?? '' }} />
-      <LangiumEditor
+      <DslEditor
         uri="file:///code2"
-        value={generatedContent}
         language="dsl2"
-        grammar={extendedDslGrammar}
-        grammarExtension={dslGrammarExtension}
+        grammar={extendedClassModelGrammar}
+        grammarExtension={classModelGrammarExtension}
+        value={generatedContent}
       />
     </main>
   );

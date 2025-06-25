@@ -1,17 +1,17 @@
-export const dslSample = `@name('ru-RU', 'Модель данных интернет-магазина')
+export const simplifiedClassModelText = `@name('ru-RU', 'модель данных интернет-магазина')
 classModel OnlineStore
 
 @name('ru-RU', 'пользователь')
 class User {
 
   @name('ru-RU', 'имя')
-  attribute firstName String[0..1]
+  attribute firstName String
 
   @name('ru-RU', 'фамилия')
-  attribute lastName String[0..1]
+  attribute lastName String
 
   @name('ru-RU', 'дата рождения')
-  attribute birthDate Date[0..1]
+  attribute birthDate Date
 
   @name('ru-RU', 'электронная почта')
   attribute email String
@@ -28,7 +28,7 @@ class Order {
   reference user User
 
   @name('ru-RU', 'элементы заказа')
-  reference items OrderItem[0..*] opposite order
+  reference items OrderItem
 
 }
 
@@ -36,7 +36,7 @@ class Order {
 class OrderItem {
 
   @name('ru-RU', 'заказ')
-  reference order Order opposite items
+  reference order Order
 
   @name('ru-RU', 'продукт')
   reference product Product
@@ -110,4 +110,5 @@ enumerated Color {
   @name('ru-RU', 'чёрный')
   Black
 
-}`;
+}
+`;

@@ -1,21 +1,39 @@
 import { create as createJsonDiffPatch, DiffPatcher } from 'jsondiffpatch';
 import { AstNode, LangiumDocument, ValueType } from 'langium';
 import { v7 as uuidv7 } from 'uuid';
-import { AbstractDslServer } from './DslServer';
-import { GrammarExtension, IdAstNode, isEntityAstNode, isReferenceAstNode } from './GrammarExtension';
+import { Diagnostic, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import { AbstractDslServer } from '../dsl-editor/AbstractDslServer';
+import { GrammarExtension, IdAstNode, isEntityAstNode, isReferenceAstNode } from '../dsl-editor/GrammarExtension';
+import { printAst } from '../dsl-editor/print';
 import { EModel } from './Model';
 import { ModelSerializer } from './ModelSerializer';
-import { printAst } from './print';
-import { ModelDocumentChange, modelDocumentChangeNotification } from './workerUtils';
 
-export class ModelDslServer extends AbstractDslServer {
+export interface DslModelChange {
+  uri: string;
+  model: EModel;
+  diagnostics: Diagnostic[];
+}
+export const dslModelChangeNotification = new NotificationType<DslModelChange>('dsl/ModelChange');
+
+export interface DslSetModel {
+  uri: string;
+  value: EModel;
+}
+export const dslSetModelNotification = new NotificationType<DslSetModel>('dsl/SetModel');
+
+export class DslModelServer extends AbstractDslServer {
   private namespaces: Record<string, string>;
   private modelSerializer: ModelSerializer;
   private jsonDiffPatch: DiffPatcher;
   private asts: WeakMap<LangiumDocument<AstNode>, AstNode>;
 
-  constructor(grammar: string, grammarExtension: string | undefined, namespaces: Record<string, string>) {
-    super(grammar, grammarExtension);
+  constructor(
+    language: string,
+    grammar: string,
+    grammarExtension: string | undefined,
+    namespaces: Record<string, string>,
+  ) {
+    super(language, grammar, grammarExtension);
     this.namespaces = namespaces;
     this.modelSerializer = new ModelSerializer();
     this.jsonDiffPatch = createJsonDiffPatch({
@@ -24,6 +42,20 @@ export class ModelDslServer extends AbstractDslServer {
       },
     });
     this.asts = new WeakMap<LangiumDocument<AstNode>, AstNode>();
+
+    this.connection.onNotification(dslSetModelNotification, (params) => {
+      const ast = new ModelSerializer().deserialize(params.value, {
+        grammar: this.grammar,
+        grammarExtension: this.grammarExtension,
+      });
+      const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
+      const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
+      this.connection.workspace.applyEdit({
+        changes: {
+          [params.uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), text)],
+        },
+      });
+    });
   }
 
   protected override onChange(document: LangiumDocument<AstNode>): void {
@@ -45,12 +77,12 @@ export class ModelDslServer extends AbstractDslServer {
       grammarExtension: this.grammarExtension,
     });
 
-    const params: ModelDocumentChange = {
+    const params: DslModelChange = {
       uri: document.uri.toString(),
       model,
       diagnostics: document.diagnostics ?? [],
     };
-    this.connection.sendNotification(modelDocumentChangeNotification, params);
+    this.connection.sendNotification(dslModelChangeNotification, params);
   }
 
   setModel(uri: string, value: EModel) {
@@ -62,7 +94,7 @@ export class ModelDslServer extends AbstractDslServer {
       grammarExtension: this.grammarExtension,
     });
     const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
-    const text = printAst(denormalizedAst, this.grammar);
+    const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
     this.setValue(uri, text);
   }
 }
@@ -132,11 +164,14 @@ export function transformNode(
     Object.entries(node)
       .filter(([name]) => !name.startsWith('$'))
       .map(([name, value]) => [name, transformValue(value, grammarExtension, transformationName)])
-      .filter(([, value]) => value !== undefined),
+      .filter(([, value]) => value !== undefined && (!Array.isArray(value) || value.length)),
   );
-  for (const [name, value] of Object.entries(grammarExtension[node.$type] ?? {})) {
-    if (value[transformationName]) {
-      result[name] = value[transformationName](result);
+  for (const [propertyName, propertyExtension] of Object.entries(grammarExtension[node.$type] ?? {})) {
+    if (propertyExtension[transformationName]) {
+      result[propertyName] = propertyExtension[transformationName](result);
+      if (result[propertyName] === undefined) {
+        delete result[propertyName];
+      }
     }
   }
   return { $id: node.$id, $type: node.$type, ...result };
@@ -157,31 +192,3 @@ function transformValue(
   }
   return node;
 }
-
-// function normalizeNode(node: IdAstNode, grammarExtension: GrammarExtension): IdAstNode {
-//   const result = Object.fromEntries(
-//     Object.entries(node)
-//       .filter(([name]) => !name.startsWith('$'))
-//       .map(([name, value]) => [name, normalizeValue(value, grammarExtension)])
-//       .filter(([, value]) => value !== undefined),
-//   );
-//   for (const [name, value] of Object.entries(grammarExtension[node.$type] ?? {})) {
-//     if (value.normalize) {
-//       result[name] = value.normalize(result);
-//     }
-//   }
-//   return { $id: node.$id, $type: node.$type, ...result };
-// }
-
-// function normalizeValue(
-//   node: ValueType,
-//   grammarExtension: GrammarExtension,
-// ): IdAstNode | IdAstNode[] | ValueType | ValueType[] {
-//   if (Array.isArray(node)) {
-//     return node.map((value) => normalizeValue(value, grammarExtension)) as IdAstNode[] | ValueType[];
-//   }
-//   if (isEntityAstNode(node)) {
-//     return normalizeNode(node, grammarExtension);
-//   }
-//   return node;
-// }

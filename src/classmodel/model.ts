@@ -1,6 +1,6 @@
-import { EModel } from '../langium/Model';
+import { EModel } from '../dsl-model-editor/Model';
 
-export const dslModel: EModel = {
+export const classModel: EModel = {
   json: {
     version: '1.0',
     encoding: 'utf-8',
@@ -11,28 +11,28 @@ export const dslModel: EModel = {
   },
   content: [
     {
-      id: '019782f8-c579-718e-af73-b43ea10eafe1',
+      id: '0197a602-a759-712e-81ab-9a326d8244d4',
       eClass: 'classmodel:ClassModel',
       data: {
         localizedName: [
           {
-            id: '019782f8-ce29-70ef-871f-dd5845e4c1da',
+            id: '0197a602-a75a-77cf-b827-1b98385eea26',
             eClass: 'ecore:EStringToStringMapEntry',
             data: {
               key: 'ru-RU',
-              value: 'Модель данных интернет-магазина',
+              value: 'модель данных интернет-магазина',
             },
           },
         ],
         name: 'OnlineStore',
         classes: [
           {
-            id: '019782f8-c579-718e-af73-b96cd6d02510',
+            id: '0197a602-a75a-77cf-b827-1dc877acbbc0',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-c579-718e-af73-bf94951cca06',
+                  id: '0197a602-a75a-77cf-b827-200df3134f70',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -44,12 +44,12 @@ export const dslModel: EModel = {
               name: 'User',
               properties: [
                 {
-                  id: '019782f8-c579-718e-af73-c82ec9b669ce',
+                  id: '0197a602-a75a-77cf-b827-274919b36035',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-c579-718e-af73-cc76d0100a1d',
+                        id: '0197a602-a75a-77cf-b827-286e22f7416f',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -58,18 +58,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'firstName',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
                     lower: 0,
                     upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-c579-718e-af73-d0713c81856b',
+                  id: '0197a602-a75a-77cf-b827-2c7465fae9bb',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-c579-718e-af73-d70f9480a404',
+                        id: '0197a602-a75a-77cf-b827-331802d37383',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -78,18 +78,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'lastName',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
                     lower: 0,
                     upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-c579-718e-af73-d9849cf60440',
+                  id: '0197a602-a75a-77cf-b827-351cc71066fc',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-0ac3c303ea99',
+                        id: '0197a602-a75a-77cf-b827-3b6372bb3b85',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -98,18 +98,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'birthDate',
-                    dataType: '019782f8-c579-718e-af73-fd00f5b674a0',
-                    lower: 0,
+                    dataType: '0197a602-a75a-77cf-b827-cf261e9de448',
+                    lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-0e6fd4c79c62',
+                  id: '0197a602-a75a-77cf-b827-3fefaf8a11a3',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-11a0f11a8e64',
+                        id: '0197a602-a75a-77cf-b827-418235fedaa4',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -118,22 +118,21 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'email',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
                     lower: 1,
                     upper: 1,
                   },
                 },
               ],
-              generals: [],
             },
           },
           {
-            id: '019782f8-c579-718e-af73-de15f6bb461b',
+            id: '0197a602-a75a-77cf-b827-4731a5270e0a',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-165f6a43d918',
+                  id: '0197a602-a75a-77cf-b827-49116bc5ce56',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -145,12 +144,12 @@ export const dslModel: EModel = {
               name: 'Order',
               properties: [
                 {
-                  id: '019782f8-ce28-776d-836d-192093fc18d0',
+                  id: '0197a602-a75a-77cf-b827-4e4b319c5999',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-1e590f912d39',
+                        id: '0197a602-a75a-77cf-b827-50aa29298525',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -159,16 +158,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'deliveryAddress',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-21e43590147e',
+                  id: '0197a602-a75a-77cf-b827-54fb3068a38f',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-27617ce975da',
+                        id: '0197a602-a75a-77cf-b827-58f2cba07d02',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -177,16 +178,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'user',
-                    target: '019782f8-c579-718e-af73-b96cd6d02510',
+                    target: '0197a602-a75a-77cf-b827-1dc877acbbc0',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-2a587231f60e',
+                  id: '0197a602-a75a-77cf-b827-5e64dbef4264',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-2de633842238',
+                        id: '0197a602-a75a-77cf-b827-60040fb7f00d',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -195,20 +198,21 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'items',
-                    target: '019782f8-c579-718e-af73-e162958f6c83',
+                    target: '0197a602-a75a-77cf-b827-649b969f3f0a',
+                    lower: 1,
+                    upper: -1,
                   },
                 },
               ],
-              generals: [],
             },
           },
           {
-            id: '019782f8-c579-718e-af73-e162958f6c83',
+            id: '0197a602-a75a-77cf-b827-649b969f3f0a',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-c579-718e-af73-e6fbe721080f',
+                  id: '0197a602-a75a-77cf-b827-6865ad45df0b',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -220,12 +224,12 @@ export const dslModel: EModel = {
               name: 'OrderItem',
               properties: [
                 {
-                  id: '019782f8-ce28-776d-836d-30e8d814a74a',
+                  id: '0197a602-a75a-77cf-b827-6de8b40b1c2b',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-342fa8af21de',
+                        id: '0197a602-a75a-77cf-b827-721b9a1ca207',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -234,16 +238,19 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'order',
-                    target: '019782f8-c579-718e-af73-de15f6bb461b',
+                    target: '0197a602-a75a-77cf-b827-4731a5270e0a',
+                    opposite: '0197a602-a75a-77cf-b827-5e64dbef4264',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-3ab78fae3319',
+                  id: '0197a602-a75a-77cf-b827-75d6c6e7389b',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-3cab37fb324d',
+                        id: '0197a602-a75a-77cf-b827-7b23a5c58c9a',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -252,16 +259,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'product',
-                    target: '019782f8-c579-718e-af73-ebdb3ffc7daa',
+                    target: '0197a602-a75a-77cf-b827-8e37dea56e11',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-412b9b945456',
+                  id: '0197a602-a75a-77cf-b827-7c4b5cf71e63',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-47b3fe8fa629',
+                        id: '0197a602-a75a-77cf-b827-80c9c2fe5d35',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -270,16 +279,18 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'quantity',
-                    dataType: '019782f8-c579-718e-af73-f5efc1458c96',
+                    dataType: '0197a602-a75a-77cf-b827-c6185e0d31b5',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-48a00d83aaa8',
+                  id: '0197a602-a75a-77cf-b827-87b405c86907',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-4fa08a3437a1',
+                        id: '0197a602-a75a-77cf-b827-8a98b0b3acc1',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -288,20 +299,21 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'price',
-                    dataType: '019782f8-c579-718e-af74-02f65b6bd403',
+                    dataType: '0197a602-a75a-77cf-b827-d44df6bf991f',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
               ],
-              generals: [],
             },
           },
           {
-            id: '019782f8-c579-718e-af73-ebdb3ffc7daa',
+            id: '0197a602-a75a-77cf-b827-8e37dea56e11',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-5063e214fea2',
+                  id: '0197a602-a75a-77cf-b827-9054848f407d',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -313,12 +325,12 @@ export const dslModel: EModel = {
               name: 'Product',
               properties: [
                 {
-                  id: '019782f8-ce28-776d-836d-57bc0965ab7c',
+                  id: '0197a602-a75a-77cf-b827-9750a20d6ee3',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-59c219b33131',
+                        id: '0197a602-a75a-77cf-b827-98036dc68348',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -327,20 +339,21 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'name',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
               ],
-              generals: [],
             },
           },
           {
-            id: '019782f8-ce28-776d-836d-5cde1ee43512',
+            id: '0197a602-a75a-77cf-b827-9d16ed97ba0b',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-61fda2459c7f',
+                  id: '0197a602-a75a-77cf-b827-a06a1cf45470',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -350,15 +363,15 @@ export const dslModel: EModel = {
               ],
               kind: 'Regular',
               name: 'Book',
-              generals: ['019782f8-c579-718e-af73-ebdb3ffc7daa'],
+              generals: ['0197a602-a75a-77cf-b827-8e37dea56e11'],
               properties: [
                 {
-                  id: '019782f8-ce28-776d-836d-64479ebb49a3',
+                  id: '0197a602-a75a-77cf-b827-a4c616309e48',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-69f2402929ce',
+                        id: '0197a602-a75a-77cf-b827-abb57ff3df5c',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -367,19 +380,21 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'author',
-                    dataType: '019782f8-c579-718e-af73-ed91348a2293',
+                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
               ],
             },
           },
           {
-            id: '019782f8-ce28-776d-836d-6c41f9064ad8',
+            id: '0197a602-a75a-77cf-b827-ada46e212bfc',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-731869d036e4',
+                  id: '0197a602-a75a-77cf-b827-b28d32313fe3',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -389,15 +404,15 @@ export const dslModel: EModel = {
               ],
               kind: 'Regular',
               name: 'Pen',
-              generals: ['019782f8-c579-718e-af73-ebdb3ffc7daa'],
+              generals: ['0197a602-a75a-77cf-b827-8e37dea56e11'],
               properties: [
                 {
-                  id: '019782f8-ce28-776d-836d-77f92ededbc7',
+                  id: '0197a602-a75a-77cf-b827-b7c80415bf45',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-78727282e10f',
+                        id: '0197a602-a75a-77cf-b827-babfea557e53',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -406,7 +421,9 @@ export const dslModel: EModel = {
                       },
                     ],
                     name: 'color',
-                    dataType: '019782f8-ce28-776d-836d-86bf75d613e2',
+                    dataType: '0197a602-a75a-77cf-b827-df8f49641d6b',
+                    lower: 1,
+                    upper: 1,
                   },
                 },
               ],
@@ -415,12 +432,12 @@ export const dslModel: EModel = {
         ],
         dataTypes: [
           {
-            id: '019782f8-c579-718e-af73-ed91348a2293',
+            id: '0197a602-a75a-77cf-b827-bee806621ae6',
             eClass: 'classmodel:StringType',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-c579-718e-af73-f2a3229b0a7b',
+                  id: '0197a602-a75a-77cf-b827-c08761980d5f',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -432,12 +449,12 @@ export const dslModel: EModel = {
             },
           },
           {
-            id: '019782f8-c579-718e-af73-f5efc1458c96',
+            id: '0197a602-a75a-77cf-b827-c6185e0d31b5',
             eClass: 'classmodel:NumericType',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-c579-718e-af73-fa49b8821aaf',
+                  id: '0197a602-a75a-77cf-b827-cac8ab9c7235',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -451,12 +468,12 @@ export const dslModel: EModel = {
             },
           },
           {
-            id: '019782f8-c579-718e-af73-fd00f5b674a0',
+            id: '0197a602-a75a-77cf-b827-cf261e9de448',
             eClass: 'classmodel:TimeType',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-7df967b5fc7f',
+                  id: '0197a602-a75a-77cf-b827-d0670fd93d79',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -466,16 +483,15 @@ export const dslModel: EModel = {
               ],
               name: 'Date',
               instantUnits: ['Year', 'Month', 'Day'],
-              durationUnits: [],
             },
           },
           {
-            id: '019782f8-c579-718e-af74-02f65b6bd403',
+            id: '0197a602-a75a-77cf-b827-d44df6bf991f',
             eClass: 'classmodel:NumericType',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-81241caa05b5',
+                  id: '0197a602-a75a-77cf-b827-d96478c128ee',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -490,12 +506,12 @@ export const dslModel: EModel = {
             },
           },
           {
-            id: '019782f8-ce28-776d-836d-86bf75d613e2',
+            id: '0197a602-a75a-77cf-b827-df8f49641d6b',
             eClass: 'classmodel:EnumeratedType',
             data: {
               localizedName: [
                 {
-                  id: '019782f8-ce28-776d-836d-89003ebdd49e',
+                  id: '0197a602-a75a-77cf-b827-e334b650a95c',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -506,12 +522,12 @@ export const dslModel: EModel = {
               name: 'Color',
               literals: [
                 {
-                  id: '019782f8-ce28-776d-836d-8e4b43fdb02a',
+                  id: '0197a602-a75a-77cf-b827-e7822e72724d',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-9032926f4369',
+                        id: '0197a602-a75a-77cf-b827-e83390032187',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -523,12 +539,12 @@ export const dslModel: EModel = {
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-966f02f8e7c4',
+                  id: '0197a602-a75a-77cf-b827-ede7525c8d56',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-9bc20deaebd5',
+                        id: '0197a602-a75a-77cf-b827-f29f9089da1a',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -540,12 +556,12 @@ export const dslModel: EModel = {
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-9fac6c33cfc3',
+                  id: '0197a602-a75a-77cf-b827-f6e09dbc97c4',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-a09c0506c60f',
+                        id: '0197a602-a75a-77cf-b827-fb8a9f2b258e',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -557,12 +573,12 @@ export const dslModel: EModel = {
                   },
                 },
                 {
-                  id: '019782f8-ce28-776d-836d-a6c9291a9954',
+                  id: '0197a602-a75a-77cf-b827-ffb17096ce58',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '019782f8-ce28-776d-836d-a8e184c17e68',
+                        id: '0197a602-a75a-77cf-b828-03940730fda0',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',

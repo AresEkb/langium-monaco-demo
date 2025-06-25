@@ -1,4 +1,4 @@
-export const simplifiedDslSample = `@name('ru-RU', 'Модель данных интернет-магазина')
+export const classModelText = `@name('ru-RU', 'модель данных интернет-магазина')
 classModel OnlineStore
 
 @name('ru-RU', 'пользователь')
@@ -28,7 +28,7 @@ class Order {
   reference user User
 
   @name('ru-RU', 'элементы заказа')
-  reference items OrderItem[0..*]
+  reference items OrderItem[0..*] opposite order
 
 }
 
@@ -36,7 +36,7 @@ class Order {
 class OrderItem {
 
   @name('ru-RU', 'заказ')
-  reference order Order
+  reference order Order opposite items
 
   @name('ru-RU', 'продукт')
   reference product Product
@@ -110,4 +110,5 @@ enumerated Color {
   @name('ru-RU', 'чёрный')
   Black
 
-}`;
+}
+`;

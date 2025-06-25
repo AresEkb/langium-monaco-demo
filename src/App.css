@@ -51,3 +51,14 @@ main > * {
   overflow: auto;
   background: white;
 }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.column > * {
+  flex: 1;
+  min-width: 0;
+}

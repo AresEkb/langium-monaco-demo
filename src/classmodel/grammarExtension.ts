@@ -1,8 +1,16 @@
-export const dslGrammarExtension = `{
+export const classModelGrammarExtension = `{
   Attribute: {
+    lower: {
+      normalize(node) {
+        return node.lower !== undefined ? node.lower : 1;
+      },
+      denormalize(node) {
+        return node.lower !== node.upper ? node.lower : node.lower !== 1 ? node.lower : undefined;
+      },
+    },
     upper: {
       normalize(node) {
-        return node.upper !== undefined ? node.upper : node.lower;
+        return node.upper !== undefined ? node.upper : node.lower !== undefined ? node.lower : 1;
       },
       denormalize(node) {
         return node.upper !== node.lower ? node.upper : undefined;
@@ -10,9 +18,17 @@ export const dslGrammarExtension = `{
     },
   },
   Reference: {
+    lower: {
+      normalize(node) {
+        return node.lower !== undefined ? node.lower : 1;
+      },
+      denormalize(node) {
+        return node.lower !== node.upper ? node.lower : node.lower !== 1 ? node.lower : undefined;
+      },
+    },
     upper: {
       normalize(node) {
-        return node.upper !== undefined ? node.upper : node.lower;
+        return node.upper !== undefined ? node.upper : node.lower !== undefined ? node.lower : 1;
       },
       denormalize(node) {
         return node.upper !== node.lower ? node.upper : undefined;
@@ -34,4 +50,5 @@ export const dslGrammarExtension = `{
       },
     },
   },
-}`;
+}
+`;
