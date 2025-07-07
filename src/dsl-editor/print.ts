@@ -239,7 +239,7 @@ function indent(str: string) {
     } else if (str[i] === '}') {
       depth--;
     } else if (str[i] === '\n' && str[i + 1] !== '\n' && str[i + 1] !== '}') {
-      result += '  '.repeat(depth);
+      result += '    '.repeat(depth);
     }
   }
   return result;

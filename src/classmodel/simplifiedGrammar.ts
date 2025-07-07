@@ -21,11 +21,19 @@ Property:
 
 Attribute:
     Localization*
-    'attribute' name=ID dataType=[DataType:ID];
+    'attribute' name=ID dataType=[DataType:ID] Multiplicity?;
 
 Reference:
     Localization*
-    'reference' name=ID target=[Class:ID];
+    kind=ReferenceKind name=ID target=[Class:ID] Multiplicity?;
+
+ReferenceKind:
+    {infer ReferenceKind__Association} 'reference' |
+    {infer ReferenceKind__Composition} 'composition' |
+    {infer ReferenceKind__Aggregation} 'aggregation';
+
+fragment Multiplicity:
+    '[' lower=Natural ('..' upper=UnlimitedNatural)? ']';
 
 DataType:
     StringType | NumericType | BooleanType | TimeType | UuidType | EnumeratedType;
@@ -103,12 +111,15 @@ Numeric returns number:
 Natural returns number:
     INT;
 
+UnlimitedNatural returns number:
+    INT | '*';
+
 terminal ID: /[_a-zA-Z][\\w_]*/;
 terminal STRING: /'(\\\\.|[^'])*'/;
 terminal INT returns number: /\\d+/;
 terminal DECIMAL returns number: /(\\d*\\.\\d+|\\d+\\.\\d*)/;
 
 hidden terminal WS: /\\s+/;
-hidden terminal ML_COMMENT: /\\/\\*[\\s\\S]*?\\*\\//;
 hidden terminal SL_COMMENT: /\\/\\/[^\\n\\r]*/;
+hidden terminal ML_COMMENT: /\\/\\*[\\s\\S]*?\\*\\//;
 `;

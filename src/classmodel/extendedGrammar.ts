@@ -25,7 +25,12 @@ Attribute:
 
 Reference:
     _NL? Localization* _NL?
-    'reference' name=ID target=[Class:ID] Multiplicity? ('opposite' opposite=[Reference:ID])?;
+    kind=ReferenceKind name=ID target=[Class:ID] Multiplicity? ('opposite' opposite=[Reference:ID])?;
+
+ReferenceKind:
+    {infer ReferenceKind__Association} 'reference' |
+    {infer ReferenceKind__Composition} 'composition' |
+    {infer ReferenceKind__Aggregation} 'aggregation';
 
 fragment Multiplicity:
     '[' lower=Natural ('..' upper=UnlimitedNatural)? ']';
@@ -117,6 +122,6 @@ terminal INT returns number: /\\d+/;
 terminal DECIMAL returns number: /(\\d*\\.\\d+|\\d+\\.\\d*)/;
 
 hidden terminal WS: /\\s+/;
-hidden terminal ML_COMMENT: /\\/\\*[\\s\\S]*?\\*\\//;
 hidden terminal SL_COMMENT: /\\/\\/[^\\n\\r]*/;
+hidden terminal ML_COMMENT: /\\/\\*[\\s\\S]*?\\*\\//;
 `;
