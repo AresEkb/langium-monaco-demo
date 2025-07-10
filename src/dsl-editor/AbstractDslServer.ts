@@ -1,32 +1,36 @@
-import {
-  AstNode,
+import type {
   AstNodeDescriptionProvider,
   CstNode,
-  DefaultScopeProvider,
-  DefaultValueConverter,
-  DocumentState,
   Grammar,
   GrammarAST,
   JsonSerializer,
   LangiumCoreServices,
   LangiumDocument,
-  MapScope,
   ReferenceInfo,
   Scope,
-  ValueType,
+  ValueType} from 'langium';
+import {
+  DefaultScopeProvider,
+  DefaultValueConverter,
+  DocumentState,
+  MapScope
 } from 'langium';
-import { generateTextMate } from 'langium-cli/textmate';
 import { createServicesForGrammar } from 'langium/grammar';
-import { CompletionContext, DefaultCompletionProvider, LangiumServices, startLanguageServer } from 'langium/lsp';
-import { Connection, DiagnosticSeverity, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import type { CompletionContext , LangiumServices} from 'langium/lsp';
+import { DefaultCompletionProvider, startLanguageServer } from 'langium/lsp';
+import { generateTextMate } from 'langium-cli/textmate';
+import type { Connection} from 'vscode-languageserver';
+import { DiagnosticSeverity, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
 import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser';
-import { GrammarExtension, parseGrammarExtension } from './GrammarExtension';
+
+import type { GrammarExtension} from './GrammarExtension';
+import { parseGrammarExtension } from './GrammarExtension';
 
 export interface DslSetValue {
   uri: string;
   value: string;
 }
-export const dslSetValueNotification = new NotificationType<DslSetValue>('dsl/SetValue');
+export const dslSetValueNotification: NotificationType<DslSetValue> = new NotificationType<DslSetValue>('dsl/SetValue');
 
 export abstract class AbstractDslServer {
   private _language: string;
@@ -47,7 +51,7 @@ export abstract class AbstractDslServer {
     this._grammarExtension = parseGrammarExtension(grammarExtension);
 
     this._connection.onNotification(dslSetValueNotification, (params) => {
-      this._connection.workspace.applyEdit({
+      void this._connection.workspace.applyEdit({
         changes: {
           [params.uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), params.value)],
         },
@@ -55,7 +59,7 @@ export abstract class AbstractDslServer {
     });
   }
 
-  async start() {
+  async start(): Promise<void> {
     const { shared, serializer, Grammar } = await createServicesForGrammar({
       grammar: this._grammarString,
       module: {
@@ -93,42 +97,39 @@ export abstract class AbstractDslServer {
     startLanguageServer(shared);
   }
 
-  protected abstract onChange(document: LangiumDocument<AstNode>): void;
+  protected abstract onChange(document: LangiumDocument): void;
 
-  get connection() {
+  get connection(): Connection {
     return this._connection;
   }
 
-  get grammar() {
+  get grammar(): Grammar {
     if (this._grammar === undefined) {
       throw new Error();
     }
     return this._grammar;
   }
 
-  get grammarExtension() {
-    if (this._grammarExtension === undefined) {
-      throw new Error();
-    }
+  get grammarExtension(): GrammarExtension {
     return this._grammarExtension;
   }
 
-  get textmateGrammar() {
+  get textmateGrammar(): string {
     if (this._textmateGrammar === undefined) {
       throw new Error();
     }
     return this._textmateGrammar;
   }
 
-  get jsonSerializer() {
+  get jsonSerializer(): JsonSerializer {
     if (this._jsonSerializer === undefined) {
       throw new Error();
     }
     return this._jsonSerializer;
   }
 
-  setValue(uri: string, value: string) {
-    this._connection.workspace.applyEdit({
+  setValue(uri: string, value: string): void {
+    void this._connection.workspace.applyEdit({
       changes: {
         [uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), value)],
       },
@@ -145,6 +146,7 @@ class DslValueConverter extends DefaultValueConverter {
   }
 
   protected runConverter(rule: GrammarAST.AbstractRule, input: string, cstNode: CstNode): ValueType {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const parse = this.grammarExtension[rule.name]?.value.parse;
     if (parse) {
       return parse(input);
@@ -164,6 +166,7 @@ class DslScopeProvider extends DefaultScopeProvider {
   }
 
   getScope(context: ReferenceInfo): Scope {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const scopes = this.grammarExtension[context.container.$type]?.[context.property]?.scopes;
     if (scopes) {
       return new MapScope(

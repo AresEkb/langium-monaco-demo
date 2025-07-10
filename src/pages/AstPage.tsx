@@ -1,16 +1,20 @@
 import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
-import { AstNode } from 'langium';
+import type { AstNode } from 'langium';
+import type { ReactElement} from 'react';
 import { useState } from 'react';
+
 import { classModelGrammar } from '../classmodel/grammar';
 import { classModelGrammarExtension } from '../classmodel/grammarExtension';
 import { classModelText } from '../classmodel/text';
-import { DslEditor, DslEditorValue } from '../dsl-editor/DslEditor';
+import type { DslEditorValue } from '../dsl-editor/DslEditor';
+import { DslEditor } from '../dsl-editor/DslEditor';
 import { useDebounced } from '../hooks/useDebounced';
 
 const jsonDiffPatch = createJsonDiffPatch();
 
-export function AstPage() {
+export function AstPage(): ReactElement {
+  // eslint-disable-next-line react/hook-use-state
   const [, setAst] = useState<AstNode>();
   const [astDiff, setAstDiff] = useState<string>();
 

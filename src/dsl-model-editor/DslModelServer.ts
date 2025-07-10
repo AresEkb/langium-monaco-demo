@@ -1,11 +1,16 @@
-import { create as createJsonDiffPatch, DiffPatcher } from 'jsondiffpatch';
-import { AstNode, LangiumDocument, ValueType } from 'langium';
+import type { DiffPatcher } from 'jsondiffpatch';
+import { create as createJsonDiffPatch } from 'jsondiffpatch';
+import type { AstNode, LangiumDocument, ValueType } from 'langium';
 import { v7 as uuidv7 } from 'uuid';
-import { Diagnostic, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import type { Diagnostic } from 'vscode-languageserver';
+import { NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+
 import { AbstractDslServer } from '../dsl-editor/AbstractDslServer';
-import { GrammarExtension, IdAstNode, isEntityAstNode, isReferenceAstNode } from '../dsl-editor/GrammarExtension';
+import type { GrammarExtension, IdAstNode } from '../dsl-editor/GrammarExtension';
+import { isEntityAstNode, isReferenceAstNode } from '../dsl-editor/GrammarExtension';
 import { printAst } from '../dsl-editor/print';
-import { EModel } from './Model';
+
+import type { EModel } from './Model';
 import { ModelSerializer } from './ModelSerializer';
 
 export interface DslModelChange {
@@ -13,19 +18,21 @@ export interface DslModelChange {
   model: EModel;
   diagnostics: Diagnostic[];
 }
-export const dslModelChangeNotification = new NotificationType<DslModelChange>('dsl/ModelChange');
+export const dslModelChangeNotification: NotificationType<DslModelChange> = new NotificationType<DslModelChange>(
+  'dsl/ModelChange',
+);
 
 export interface DslSetModel {
   uri: string;
   value: EModel;
 }
-export const dslSetModelNotification = new NotificationType<DslSetModel>('dsl/SetModel');
+export const dslSetModelNotification: NotificationType<DslSetModel> = new NotificationType<DslSetModel>('dsl/SetModel');
 
 export class DslModelServer extends AbstractDslServer {
   private namespaces: Record<string, string>;
   private modelSerializer: ModelSerializer;
   private jsonDiffPatch: DiffPatcher;
-  private asts: WeakMap<LangiumDocument<AstNode>, AstNode>;
+  private asts: WeakMap<LangiumDocument, AstNode>;
 
   constructor(
     language: string,
@@ -41,7 +48,7 @@ export class DslModelServer extends AbstractDslServer {
         return name !== '$id';
       },
     });
-    this.asts = new WeakMap<LangiumDocument<AstNode>, AstNode>();
+    this.asts = new WeakMap<LangiumDocument, AstNode>();
 
     this.connection.onNotification(dslSetModelNotification, (params) => {
       const ast = new ModelSerializer().deserialize(params.value, {
@@ -50,7 +57,7 @@ export class DslModelServer extends AbstractDslServer {
       });
       const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
       const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
-      this.connection.workspace.applyEdit({
+      void this.connection.workspace.applyEdit({
         changes: {
           [params.uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), text)],
         },
@@ -58,12 +65,9 @@ export class DslModelServer extends AbstractDslServer {
     });
   }
 
-  protected override onChange(document: LangiumDocument<AstNode>): void {
-    if (!this.jsonSerializer) {
-      throw new Error();
-    }
+  protected override onChange(document: LangiumDocument): void {
     const oldAst = this.asts.get(document);
-    const newAst = JSON.parse(this.jsonSerializer.serialize(document.parseResult.value, { refText: true }));
+    const newAst = JSON.parse(this.jsonSerializer.serialize(document.parseResult.value, { refText: true })) as AstNode;
     const astDelta = this.jsonDiffPatch.diff(oldAst, newAst);
     const updatedAst = this.jsonDiffPatch.patch(oldAst, astDelta) as AstNode;
     assignIds(updatedAst);
@@ -82,13 +86,10 @@ export class DslModelServer extends AbstractDslServer {
       model,
       diagnostics: document.diagnostics ?? [],
     };
-    this.connection.sendNotification(dslModelChangeNotification, params);
+    void this.connection.sendNotification(dslModelChangeNotification, params);
   }
 
-  setModel(uri: string, value: EModel) {
-    if (!this.grammar) {
-      throw new Error();
-    }
+  setModel(uri: string, value: EModel): void {
     const ast = this.modelSerializer.deserialize(value, {
       grammar: this.grammar,
       grammarExtension: this.grammarExtension,
@@ -103,9 +104,7 @@ function assignIds(node: unknown): void {
   if (Array.isArray(node)) {
     node.forEach((value) => assignIds(value));
   } else if (isEntityAstNode(node)) {
-    if (!node.$id) {
-      node.$id = uuidv7();
-    }
+    node.$id ??= uuidv7();
     for (const [name, value] of Object.entries(node)) {
       if (!name.startsWith('$')) {
         assignIds(value);
@@ -160,21 +159,26 @@ export function transformNode(
   grammarExtension: GrammarExtension,
   transformationName: TransformationName,
 ): IdAstNode {
-  const result = Object.fromEntries(
-    Object.entries(node)
-      .filter(([name]) => !name.startsWith('$'))
-      .map(([name, value]) => [name, transformValue(value, grammarExtension, transformationName)])
-      .filter(([, value]) => value !== undefined && (!Array.isArray(value) || value.length)),
-  );
+  const result = {
+    $id: node.$id,
+    $type: node.$type,
+    ...Object.fromEntries(
+      Object.entries(node)
+        .filter(([name]) => !name.startsWith('$'))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        .map(([name, value]) => [name, transformValue(value, grammarExtension, transformationName)]),
+    ),
+  } as IdAstNode & Record<string, unknown>;
   for (const [propertyName, propertyExtension] of Object.entries(grammarExtension[node.$type] ?? {})) {
     if (propertyExtension[transformationName]) {
       result[propertyName] = propertyExtension[transformationName](result);
       if (result[propertyName] === undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete result[propertyName];
       }
     }
   }
-  return { $id: node.$id, $type: node.$type, ...result };
+  return result;
 }
 
 function transformValue(
@@ -183,6 +187,7 @@ function transformValue(
   transformationName: TransformationName,
 ): IdAstNode | IdAstNode[] | ValueType | ValueType[] {
   if (Array.isArray(node)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return node.map((value) => transformValue(value, grammarExtension, transformationName)) as
       | IdAstNode[]
       | ValueType[];

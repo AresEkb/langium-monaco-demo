@@ -1,12 +1,11 @@
-import { AstNode, Grammar, GrammarAST, ValueType } from 'langium';
-import {
-  GrammarExtension,
-  IdAstNode,
-  isEntityAstNode,
-  isEnumLiteralAstNode,
-  isReferenceAstNode,
-} from '../dsl-editor/GrammarExtension';
-import { EFeatureType, EModel, EObject, isEObject } from './Model';
+import type { AstNode, Grammar, ValueType } from 'langium';
+import { GrammarAST } from 'langium';
+
+import type { GrammarExtension, IdAstNode } from '../dsl-editor/GrammarExtension';
+import { isEntityAstNode, isEnumLiteralAstNode, isReferenceAstNode } from '../dsl-editor/GrammarExtension';
+
+import type { EFeatureType, EModel, EObject } from './Model';
+import { isEObject } from './Model';
 
 export class ModelSerializer {
   serialize(node: AstNode, options: ModelSerializeOptions): EModel {
@@ -29,7 +28,7 @@ export class ModelSerializer {
     };
   }
 
-  deserialize<T extends AstNode = AstNode>(model: EModel, options: ModelDeserializeOptions): T {
+  deserialize(model: EModel, options: ModelDeserializeOptions): AstNode {
     const objects = new Map<string, EObject>();
     fillObjectMap(model.content[0], objects);
     function getObject(id: string) {
@@ -39,7 +38,7 @@ export class ModelSerializer {
       }
       return obj;
     }
-    return deserializeNode(model.content[0], getObject, Object.keys(model.ns)[0], options.grammar) as T;
+    return deserializeNode(model.content[0], getObject, Object.keys(model.ns)[0], options.grammar) as AstNode;
   }
 }
 
@@ -65,9 +64,11 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
   return {
     id: node.$id,
     eClass,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     data: Object.fromEntries(
       Object.entries(node)
         .filter(([name]) => !name.startsWith('$'))
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         .map(([name, value]) => [name, serializeValue(value, getAstNode, namespacePrefix)])
         .filter(([, value]) => value !== undefined),
     ),
@@ -75,7 +76,7 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
 }
 
 function serializeValue(
-  node: ValueType,
+  node: ValueType | undefined,
   getAstNode: (id: string) => IdAstNode,
   namespacePrefix: string,
 ): EFeatureType | EFeatureType[] | undefined {
@@ -83,6 +84,7 @@ function serializeValue(
     return node;
   }
   if (Array.isArray(node)) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return node.map((value) => serializeValue(value, getAstNode, namespacePrefix) as EFeatureType);
   }
   if (isEntityAstNode(node)) {
@@ -95,7 +97,7 @@ function serializeValue(
     if (node.$id === undefined) {
       throw new Error();
     }
-    return node.$id as string;
+    return node.$id;
   }
   throw new Error(`Unsupported value of type ${typeof node}`);
 }
@@ -125,7 +127,7 @@ function deserializeNode(
 }
 
 function deserializeValue(
-  node: EFeatureType | EFeatureType[],
+  node: EFeatureType | EFeatureType[] | undefined | null,
   getObject: (id: string) => EObject,
   namespacePrefix: string,
   grammar: Grammar,
@@ -212,7 +214,7 @@ function findElement(element: GrammarAST.AbstractElement, name: string): Grammar
   }
   if (GrammarAST.isRuleCall(element)) {
     if (element.rule.ref) {
-      return findElement(element.rule.ref?.definition, name);
+      return findElement(element.rule.ref.definition, name);
     }
     return;
   }

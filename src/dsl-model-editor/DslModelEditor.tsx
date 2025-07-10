@@ -1,10 +1,14 @@
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
-import { MonacoEditorLanguageClientWrapper, WrapperConfig } from 'monaco-editor-wrapper';
-import { MonacoLanguageClient } from 'monaco-languageclient';
+import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from 'monaco-editor-wrapper';
+import type { MonacoLanguageClient } from 'monaco-languageclient';
+import type { ReactElement } from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
+
 import { createConfig } from '../dsl-editor/config';
-import { DslModelChange, dslModelChangeNotification, dslSetModelNotification } from './DslModelServer';
-import { EModel } from './Model';
+
+import type { DslModelChange } from './DslModelServer';
+import { dslModelChangeNotification, dslSetModelNotification } from './DslModelServer';
+import type { EModel } from './Model';
 
 export interface DslModelEditorProps {
   className?: string;
@@ -18,7 +22,7 @@ export interface DslModelEditorProps {
 
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
-export function DslModelEditor(props: DslModelEditorProps) {
+export function DslModelEditor(props: DslModelEditorProps): ReactElement {
   const [config, setConfig] = useState<WrapperConfig>();
   const [client, setClient] = useState<MonacoLanguageClient>();
 
@@ -37,7 +41,7 @@ export function DslModelEditor(props: DslModelEditorProps) {
         );
       }
     }
-    init();
+    void init();
     return () => {
       mounted = false;
       setTimeout(() => {
@@ -48,19 +52,19 @@ export function DslModelEditor(props: DslModelEditorProps) {
   }, [props.grammar, props.grammarExtension, props.language, props.uri]);
 
   useEffect(() => {
-    client?.sendNotification(dslSetModelNotification, { uri: props.uri, value: props.value });
+    void client?.sendNotification(dslSetModelNotification, { uri: props.uri, value: props.value });
   }, [client, props.uri, props.value]);
 
   const onLoad = useCallback(
     (wrapper: MonacoEditorLanguageClientWrapper) => {
-      const client = wrapper.getLanguageClient(props.language);
-      if (!client) {
+      const newClient = wrapper.getLanguageClient(props.language);
+      if (!newClient) {
         throw new Error();
       }
-      setClient(client);
+      setClient(newClient);
       const onChange = props.onChange;
       if (onChange) {
-        client.onNotification(dslModelChangeNotification, (response: DslModelChange) => {
+        newClient.onNotification(dslModelChangeNotification, (response: DslModelChange) => {
           if (response.uri === props.uri) {
             onChange(response.model);
           }
@@ -71,7 +75,7 @@ export function DslModelEditor(props: DslModelEditorProps) {
   );
 
   if (!config) {
-    return <div></div>;
+    return <div />;
   }
 
   return <MemoizedMonacoEditorReactComp className={props.className} wrapperConfig={config} onLoad={onLoad} />;
@@ -86,7 +90,9 @@ function createWorker(
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL('./DslModelEditorWorker.ts', import.meta.url), { type: 'module' });
     worker.onmessage = (event) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (event.data.type === 'started') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         resolve({ worker, textmateGrammar: event.data.textmateGrammar });
       }
     };

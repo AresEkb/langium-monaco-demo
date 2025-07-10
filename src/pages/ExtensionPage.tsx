@@ -1,4 +1,6 @@
+import type { ReactElement} from 'react';
 import { useState } from 'react';
+
 import { classModelGrammar } from '../classmodel/grammar';
 import { classModelGrammarExtension } from '../classmodel/grammarExtension';
 import { classModelText } from '../classmodel/text';
@@ -7,7 +9,7 @@ import { DslGrammarEditor } from '../dsl-grammar-editor/DslGrammarEditor';
 import { DslGrammarExtensionEditor } from '../dsl-grammar-editor/DslGrammarExtensionEditor';
 import { useDebounced } from '../hooks/useDebounced';
 
-export function ExtensionPage() {
+export function ExtensionPage(): ReactElement {
   const [grammar, setGrammar] = useState(classModelGrammar);
   const [grammarExtension, setGrammarExtension] = useState(classModelGrammarExtension);
   const onGrammarChanged = useDebounced(setGrammar, 500);

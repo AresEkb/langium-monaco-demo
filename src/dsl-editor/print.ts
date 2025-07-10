@@ -1,5 +1,8 @@
-import { AstNode, Grammar, GrammarAST, isAstNode, isReference } from 'langium';
-import { GrammarExtension } from './GrammarExtension';
+import type { AstNode, Grammar } from 'langium';
+import { GrammarAST, isAstNode, isReference } from 'langium';
+
+import { isValueType } from './GrammarExtension';
+import type { GrammarExtension } from './GrammarExtension';
 
 class AstNodePropertyGetter {
   private node;
@@ -14,7 +17,7 @@ class AstNodePropertyGetter {
     return this.node.$type;
   }
 
-  get(property: string) {
+  get(property: string): unknown {
     const value = (this.node as unknown as Record<string, unknown>)[property];
     if (!Array.isArray(value)) {
       return value;
@@ -25,7 +28,7 @@ class AstNodePropertyGetter {
   }
 }
 
-export function printAst(node: AstNode, grammar: Grammar, grammarExtension?: GrammarExtension) {
+export function printAst(node: AstNode, grammar: Grammar, grammarExtension?: GrammarExtension): string {
   const rule = grammar.rules.find((r) => GrammarAST.isParserRule(r) && r.name === node.$type);
   if (!rule) {
     throw new Error(`Rule not found for ${node.$type}`);
@@ -54,10 +57,9 @@ function printElement(
       return '\n';
     }
     if (element.rule.ref?.fragment || node.type() === element.rule.ref?.name) {
-      return repeat(node, grammar, grammarExtension, element.rule.ref?.definition, printElement, element.cardinality);
-    } else {
-      return undefined;
+      return repeat(node, grammar, grammarExtension, element.rule.ref.definition, printElement, element.cardinality);
     }
+    return undefined;
   }
   if (GrammarAST.isAction(element)) {
     return node.type() === element.inferredType?.name ? '' : undefined;
@@ -108,22 +110,26 @@ function printAssignment(
 ): string | undefined {
   if (GrammarAST.isRuleCall(element.terminal)) {
     const value = node.get(element.feature);
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       return undefined;
     }
     if (GrammarAST.isParserRule(element.terminal.rule.ref)) {
       if (element.terminal.rule.ref.dataType) {
-        const print = grammarExtension[element.terminal.rule.ref.name]?.value?.print;
+        if (!isValueType(value)) {
+          throw new Error('Expected a value type');
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        const print = grammarExtension[element.terminal.rule.ref.name]?.value.print;
         if (print) {
-          return print ? print(value) : value.toString();
+          return print(value);
         }
         if (element.terminal.rule.ref.dataType === 'number') {
           return value.toString();
         }
-        throw new Error(`Unsupported value '${value}' with type ${typeof value}`);
+        throw new Error(`Unsupported value with type ${typeof value}`);
       } else {
         if (!isAstNode(value)) {
-          throw new Error(`Expected AST node but got '${value}' with type ${typeof value}`);
+          throw new Error(`Expected AST node but got value with type ${typeof value}`);
         }
         return printElement(
           new AstNodePropertyGetter(value),
@@ -155,7 +161,7 @@ function printAssignment(
       if (typeof value === 'number') {
         return value.toString();
       }
-      throw new Error(`Unsupported value '${value}' with type ${typeof value}`);
+      throw new Error(`Unsupported value with type ${typeof value}`);
     }
     throw new Error();
   }
@@ -165,7 +171,7 @@ function printAssignment(
       return undefined;
     }
     if (!isReference(value)) {
-      throw new Error(`Expected cross-reference but got '${value}' with type ${typeof value}`);
+      throw new Error(`Expected cross-reference but got value with type ${typeof value}`);
     }
     return value.$refText;
   }

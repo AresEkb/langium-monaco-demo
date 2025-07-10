@@ -1,7 +1,8 @@
 import { LogLevel } from '@codingame/monaco-vscode-api';
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
-import { TextContents, WrapperConfig } from 'monaco-editor-wrapper';
+import type { TextContents, WrapperConfig } from 'monaco-editor-wrapper';
 import { configureDefaultWorkerFactory } from 'monaco-editor-wrapper/workers/workerLoaders';
+import type { ReactElement } from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
 
 export interface DslGrammarExtensionEditorProps {
@@ -13,7 +14,7 @@ export interface DslGrammarExtensionEditorProps {
 
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
-export function DslGrammarExtensionEditor(props: DslGrammarExtensionEditorProps) {
+export function DslGrammarExtensionEditor(props: DslGrammarExtensionEditorProps): ReactElement {
   const [config, setConfig] = useState<WrapperConfig>();
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function DslGrammarExtensionEditor(props: DslGrammarExtensionEditorProps)
   );
 
   if (!config) {
-    return <div></div>;
+    return <div />;
   }
 
   return (

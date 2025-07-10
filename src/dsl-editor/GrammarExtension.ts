@@ -1,4 +1,5 @@
-import { AstNode, isAstNode, isReference, Reference, ValueType } from 'langium';
+import type { AstNode, Reference, ValueType } from 'langium';
+import { isAstNode, isReference } from 'langium';
 
 export type GrammarExtension = Record<string, Record<string, PropertyExtension>>;
 
@@ -30,6 +31,16 @@ export function isReferenceAstNode(obj: unknown): obj is IdReference<IdAstNode> 
   return isReference(obj);
 }
 
+export function isValueType(obj: unknown): obj is ValueType {
+  const type = typeof obj;
+  return type === 'string' || type === 'number' || type === 'boolean' || type === 'bigint' || obj instanceof Date;
+}
+
+export function isValueTypeArray(obj: unknown[]): obj is ValueType[] {
+  return obj.every(isValueType);
+}
+
 export function parseGrammarExtension(grammarExtension?: string): GrammarExtension {
-  return grammarExtension ? new Function('return ' + grammarExtension)() : {};
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  return grammarExtension ? (new Function('return ' + grammarExtension) as () => GrammarExtension)() : {};
 }

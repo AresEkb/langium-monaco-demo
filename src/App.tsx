@@ -1,4 +1,6 @@
+import type { ReactElement } from 'react';
 import { HashRouter, NavLink, Route, Routes } from 'react-router';
+
 import { AstPage } from './pages/AstPage';
 import { EditorPage } from './pages/EditorPage';
 import { ExtensionPage } from './pages/ExtensionPage';
@@ -9,7 +11,7 @@ import { PrintPage } from './pages/PrintPage';
 import 'jsondiffpatch/formatters/styles/html.css';
 import './App.css';
 
-export function App() {
+export function App(): ReactElement {
   return (
     <HashRouter>
       <header>

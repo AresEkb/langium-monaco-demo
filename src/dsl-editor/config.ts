@@ -1,5 +1,5 @@
 import { LogLevel } from '@codingame/monaco-vscode-api';
-import { WrapperConfig } from 'monaco-editor-wrapper';
+import type { WrapperConfig } from 'monaco-editor-wrapper';
 import { configureDefaultWorkerFactory } from 'monaco-editor-wrapper/workers/workerLoaders';
 import type { ConnectionConfigOptions } from 'monaco-languageclient';
 

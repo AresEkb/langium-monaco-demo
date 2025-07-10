@@ -1,5 +1,7 @@
-import { AstNode, LangiumDocument } from 'langium';
-import { Diagnostic, NotificationType } from 'vscode-languageserver/browser';
+import type { AstNode, LangiumDocument } from 'langium';
+import type { Diagnostic} from 'vscode-languageserver/browser';
+import { NotificationType } from 'vscode-languageserver/browser';
+
 import { AbstractDslServer } from './AbstractDslServer';
 
 export interface DslDocumentChange {
@@ -8,7 +10,8 @@ export interface DslDocumentChange {
   ast?: AstNode;
   diagnostics: Diagnostic[];
 }
-export const dslDocumentChangeNotification = new NotificationType<DslDocumentChange>('dsl/DocumentChange');
+export const dslDocumentChangeNotification: NotificationType<DslDocumentChange> =
+  new NotificationType<DslDocumentChange>('dsl/DocumentChange');
 
 export class DslServer extends AbstractDslServer {
   private excludeText: boolean;
@@ -26,7 +29,7 @@ export class DslServer extends AbstractDslServer {
     this.includeAst = includeAst ?? false;
   }
 
-  protected override onChange(document: LangiumDocument<AstNode>) {
+  protected override onChange(document: LangiumDocument): void {
     const params: DslDocumentChange = {
       uri: document.uri.toString(),
       diagnostics: document.diagnostics ?? [],
@@ -35,8 +38,8 @@ export class DslServer extends AbstractDslServer {
       params.text = document.textDocument.getText();
     }
     if (this.includeAst) {
-      params.ast = JSON.parse(this.jsonSerializer.serialize(document.parseResult.value, { refText: true }));
+      params.ast = JSON.parse(this.jsonSerializer.serialize(document.parseResult.value, { refText: true })) as AstNode;
     }
-    this.connection.sendNotification(dslDocumentChangeNotification, params);
+    void this.connection.sendNotification(dslDocumentChangeNotification, params);
   }
 }

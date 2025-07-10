@@ -1,4 +1,4 @@
-import { EModel } from '../dsl-model-editor/Model';
+import type { EModel } from '../dsl-model-editor/Model';
 
 export const classModel: EModel = {
   json: {
@@ -11,12 +11,12 @@ export const classModel: EModel = {
   },
   content: [
     {
-      id: '0197a602-a759-712e-81ab-9a326d8244d4',
+      id: '0197f429-e5e0-743b-9330-d755229cecbb',
       eClass: 'classmodel:ClassModel',
       data: {
         localizedName: [
           {
-            id: '0197a602-a75a-77cf-b827-1b98385eea26',
+            id: '0197f429-e5e0-743b-9330-db1f4b92def2',
             eClass: 'ecore:EStringToStringMapEntry',
             data: {
               key: 'ru-RU',
@@ -27,12 +27,12 @@ export const classModel: EModel = {
         name: 'OnlineStore',
         classes: [
           {
-            id: '0197a602-a75a-77cf-b827-1dc877acbbc0',
+            id: '0197f429-e5e0-743b-9330-dfccbe50ea8a',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-200df3134f70',
+                  id: '0197f429-e5e0-743b-9330-e355d52c727d',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -40,36 +40,54 @@ export const classModel: EModel = {
                   },
                 },
               ],
+              localizedDescription: [
+                {
+                  id: '0197f429-ed3a-7275-bd07-216ec2ea7190',
+                  eClass: 'ecore:EStringToStringMapEntry',
+                  data: {
+                    key: 'ru-RU',
+                    value: 'пользователь системы, который может делать заказы',
+                  },
+                },
+              ],
               kind: 'Regular',
               name: 'User',
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-274919b36035',
+                  id: '0197f429-e5e1-777f-9508-9562d8686ac3',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-286e22f7416f',
+                        id: '0197f429-e5e1-777f-9508-9940a4401452',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
                           value: 'имя',
                         },
                       },
+                      {
+                        id: '0197f429-ed3a-7275-bd07-1cb37b2a7462',
+                        eClass: 'ecore:EStringToStringMapEntry',
+                        data: {
+                          key: 'fr-FR',
+                          value: 'prénom',
+                        },
+                      },
                     ],
                     name: 'firstName',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
                     lower: 0,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-2c7465fae9bb',
+                  id: '0197f429-e5e1-777f-9508-9e16d8090911',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-331802d37383',
+                        id: '0197f429-e5e1-777f-9508-a153db85075e',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -78,18 +96,18 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'lastName',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
                     lower: 0,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-351cc71066fc',
+                  id: '0197f429-e5e1-777f-9508-a6e22e7a4ea1',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-3b6372bb3b85',
+                        id: '0197f429-e5e1-777f-9508-abc83e024132',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -98,18 +116,18 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'birthDate',
-                    dataType: '0197a602-a75a-77cf-b827-cf261e9de448',
-                    lower: 1,
+                    dataType: '0197f429-e5e1-777f-9509-0f287fff11bb',
+                    lower: 0,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-3fefaf8a11a3',
+                  id: '0197f429-e5e1-777f-9508-ade439a6d52c',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-418235fedaa4',
+                        id: '0197f429-e5e1-777f-9508-b1086feb5763',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -118,7 +136,8 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'email',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
+
                     lower: 1,
                     upper: 1,
                   },
@@ -127,12 +146,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-4731a5270e0a',
+            id: '0197f429-e5e1-777f-9508-b641ee62a5f5',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-49116bc5ce56',
+                  id: '0197f429-e5e1-777f-9508-b881ccf9eb30',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -144,12 +163,12 @@ export const classModel: EModel = {
               name: 'Order',
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-4e4b319c5999',
+                  id: '0197f429-e5e1-777f-9508-be89e6339edf',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-50aa29298525',
+                        id: '0197f429-e5e1-777f-9508-c31e3d82b8f2',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -158,18 +177,19 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'deliveryAddress',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
+
                     lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-54fb3068a38f',
+                  id: '0197f429-ed3a-7275-bd07-2784344924c7',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-58f2cba07d02',
+                        id: '0197f429-ed3a-7275-bd07-29b065d892dc',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -177,19 +197,21 @@ export const classModel: EModel = {
                         },
                       },
                     ],
+                    kind: 'Association',
                     name: 'user',
-                    target: '0197a602-a75a-77cf-b827-1dc877acbbc0',
+                    target: '0197f429-e5e0-743b-9330-dfccbe50ea8a',
+
                     lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-5e64dbef4264',
+                  id: '0197f429-ed3a-7275-bd07-2d300a84c220',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-60040fb7f00d',
+                        id: '0197f429-ed3a-7275-bd07-32dd716a34ea',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -197,22 +219,24 @@ export const classModel: EModel = {
                         },
                       },
                     ],
+                    kind: 'Composition',
                     name: 'items',
-                    target: '0197a602-a75a-77cf-b827-649b969f3f0a',
-                    lower: 1,
+                    target: '0197f429-e5e1-777f-9508-c6601dab323e',
+                    lower: 0,
                     upper: -1,
+                    opposite: '0197f429-ed3a-7275-bd07-36990b2ac16b',
                   },
                 },
               ],
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-649b969f3f0a',
+            id: '0197f429-e5e1-777f-9508-c6601dab323e',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-6865ad45df0b',
+                  id: '0197f429-e5e1-777f-9508-c8c26742c987',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -224,12 +248,12 @@ export const classModel: EModel = {
               name: 'OrderItem',
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-6de8b40b1c2b',
+                  id: '0197f429-ed3a-7275-bd07-36990b2ac16b',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-721b9a1ca207',
+                        id: '0197f429-ed3a-7275-bd07-394578d24242',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -237,20 +261,22 @@ export const classModel: EModel = {
                         },
                       },
                     ],
+                    kind: 'Association',
                     name: 'order',
-                    target: '0197a602-a75a-77cf-b827-4731a5270e0a',
-                    opposite: '0197a602-a75a-77cf-b827-5e64dbef4264',
+                    target: '0197f429-e5e1-777f-9508-b641ee62a5f5',
+                    opposite: '0197f429-ed3a-7275-bd07-2d300a84c220',
+
                     lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-75d6c6e7389b',
+                  id: '0197f429-ed3a-7275-bd07-3c2dbf968c3a',
                   eClass: 'classmodel:Reference',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-7b23a5c58c9a',
+                        id: '0197f429-ed3a-7275-bd07-434c6678bca1',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -258,19 +284,21 @@ export const classModel: EModel = {
                         },
                       },
                     ],
+                    kind: 'Association',
                     name: 'product',
-                    target: '0197a602-a75a-77cf-b827-8e37dea56e11',
+                    target: '0197f429-e5e1-777f-9508-cdbcf6bc3c93',
+
                     lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-7c4b5cf71e63',
+                  id: '0197f429-ed3a-7275-bd07-45fe4f71568c',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-80c9c2fe5d35',
+                        id: '0197f429-ed3a-7275-bd07-4b41614e5f43',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -279,18 +307,19 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'quantity',
-                    dataType: '0197a602-a75a-77cf-b827-c6185e0d31b5',
+                    dataType: '0197f429-e5e1-777f-9509-044b8d535c9b',
+
                     lower: 1,
                     upper: 1,
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-87b405c86907',
+                  id: '0197f429-ed3a-7275-bd07-4fd93f18c234',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-8a98b0b3acc1',
+                        id: '0197f429-ed3a-7275-bd07-52c3284aa73e',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -299,7 +328,8 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'price',
-                    dataType: '0197a602-a75a-77cf-b827-d44df6bf991f',
+                    dataType: '0197f429-e5e1-777f-9509-170538969a7e',
+
                     lower: 1,
                     upper: 1,
                   },
@@ -308,12 +338,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-8e37dea56e11',
+            id: '0197f429-e5e1-777f-9508-cdbcf6bc3c93',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-9054848f407d',
+                  id: '0197f429-e5e1-777f-9508-d37e6445bac9',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -325,12 +355,12 @@ export const classModel: EModel = {
               name: 'Product',
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-9750a20d6ee3',
+                  id: '0197f429-e5e1-777f-9508-d5b1f09f9aed',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-98036dc68348',
+                        id: '0197f429-e5e1-777f-9508-da74b603e76a',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -339,7 +369,8 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'name',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
+
                     lower: 1,
                     upper: 1,
                   },
@@ -348,12 +379,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-9d16ed97ba0b',
+            id: '0197f429-e5e1-777f-9508-dc909d2b0a9e',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-a06a1cf45470',
+                  id: '0197f429-e5e1-777f-9508-e390e1caaea5',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -363,15 +394,15 @@ export const classModel: EModel = {
               ],
               kind: 'Regular',
               name: 'Book',
-              generals: ['0197a602-a75a-77cf-b827-8e37dea56e11'],
+              generals: ['0197f429-e5e1-777f-9508-cdbcf6bc3c93'],
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-a4c616309e48',
+                  id: '0197f429-e5e1-777f-9508-e6880e451db7',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-abb57ff3df5c',
+                        id: '0197f429-e5e1-777f-9508-e8ddae7426f7',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -380,7 +411,8 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'author',
-                    dataType: '0197a602-a75a-77cf-b827-bee806621ae6',
+                    dataType: '0197f429-e5e1-777f-9508-fecb083bb4df',
+
                     lower: 1,
                     upper: 1,
                   },
@@ -389,12 +421,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-ada46e212bfc',
+            id: '0197f429-e5e1-777f-9508-ee762760f2b6',
             eClass: 'classmodel:Class',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-b28d32313fe3',
+                  id: '0197f429-e5e1-777f-9508-f0bcb59f6298',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -404,15 +436,15 @@ export const classModel: EModel = {
               ],
               kind: 'Regular',
               name: 'Pen',
-              generals: ['0197a602-a75a-77cf-b827-8e37dea56e11'],
+              generals: ['0197f429-e5e1-777f-9508-cdbcf6bc3c93'],
               properties: [
                 {
-                  id: '0197a602-a75a-77cf-b827-b7c80415bf45',
+                  id: '0197f429-e5e1-777f-9508-f49e7a7537ae',
                   eClass: 'classmodel:Attribute',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-babfea557e53',
+                        id: '0197f429-e5e1-777f-9508-facd13126526',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -421,7 +453,8 @@ export const classModel: EModel = {
                       },
                     ],
                     name: 'color',
-                    dataType: '0197a602-a75a-77cf-b827-df8f49641d6b',
+                    dataType: '0197f429-e5e1-777f-9509-1e1e83eaa480',
+
                     lower: 1,
                     upper: 1,
                   },
@@ -432,12 +465,12 @@ export const classModel: EModel = {
         ],
         dataTypes: [
           {
-            id: '0197a602-a75a-77cf-b827-bee806621ae6',
+            id: '0197f429-e5e1-777f-9508-fecb083bb4df',
             eClass: 'classmodel:StringType',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-c08761980d5f',
+                  id: '0197f429-e5e1-777f-9509-0344c765ccc1',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -449,12 +482,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-c6185e0d31b5',
+            id: '0197f429-e5e1-777f-9509-044b8d535c9b',
             eClass: 'classmodel:NumericType',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-cac8ab9c7235',
+                  id: '0197f429-e5e1-777f-9509-09af76b18988',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -468,12 +501,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-cf261e9de448',
+            id: '0197f429-e5e1-777f-9509-0f287fff11bb',
             eClass: 'classmodel:TimeType',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-d0670fd93d79',
+                  id: '0197f429-e5e1-777f-9509-109fcaaaa3ae',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -486,12 +519,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-d44df6bf991f',
+            id: '0197f429-e5e1-777f-9509-170538969a7e',
             eClass: 'classmodel:NumericType',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-d96478c128ee',
+                  id: '0197f429-e5e1-777f-9509-19cc84ddcd7a',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -506,12 +539,12 @@ export const classModel: EModel = {
             },
           },
           {
-            id: '0197a602-a75a-77cf-b827-df8f49641d6b',
+            id: '0197f429-e5e1-777f-9509-1e1e83eaa480',
             eClass: 'classmodel:EnumeratedType',
             data: {
               localizedName: [
                 {
-                  id: '0197a602-a75a-77cf-b827-e334b650a95c',
+                  id: '0197f429-e5e1-777f-9509-225460e88b81',
                   eClass: 'ecore:EStringToStringMapEntry',
                   data: {
                     key: 'ru-RU',
@@ -522,12 +555,12 @@ export const classModel: EModel = {
               name: 'Color',
               literals: [
                 {
-                  id: '0197a602-a75a-77cf-b827-e7822e72724d',
+                  id: '0197f429-e5e1-777f-9509-256cfd355764',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-e83390032187',
+                        id: '0197f429-e5e1-777f-9509-2abbde2679ea',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -539,12 +572,12 @@ export const classModel: EModel = {
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-ede7525c8d56',
+                  id: '0197f429-e5e1-777f-9509-2cbe786bbcae',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-f29f9089da1a',
+                        id: '0197f429-e5e1-777f-9509-30789e2f39c0',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -556,12 +589,12 @@ export const classModel: EModel = {
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-f6e09dbc97c4',
+                  id: '0197f429-e5e1-777f-9509-35c10790ad73',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b827-fb8a9f2b258e',
+                        id: '0197f429-e5e1-777f-9509-3b8604d6c076',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
@@ -573,12 +606,12 @@ export const classModel: EModel = {
                   },
                 },
                 {
-                  id: '0197a602-a75a-77cf-b827-ffb17096ce58',
+                  id: '0197f429-e5e1-777f-9509-3d33b01d8498',
                   eClass: 'classmodel:EnumeratedTypeLiteral',
                   data: {
                     localizedName: [
                       {
-                        id: '0197a602-a75a-77cf-b828-03940730fda0',
+                        id: '0197f429-e5e1-777f-9509-417bea64384d',
                         eClass: 'ecore:EStringToStringMapEntry',
                         data: {
                           key: 'ru-RU',
