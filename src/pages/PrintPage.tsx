@@ -2,7 +2,7 @@ import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import type { AstNode } from 'langium';
 import { createServicesForGrammar } from 'langium/grammar';
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { extendedClassModelGrammar } from '../classmodel/extendedGrammar';
@@ -37,7 +37,7 @@ export function PrintPage(): ReactElement {
     <main>
       <DslEditor
         uri="file:///code"
-        language="dsl"
+        language="classmodel"
         grammar={extendedClassModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={classModelText}
@@ -48,7 +48,7 @@ export function PrintPage(): ReactElement {
       <div className="json-diff" dangerouslySetInnerHTML={{ __html: astDiff ?? '' }} />
       <DslEditor
         uri="file:///code2"
-        language="dsl2"
+        language="classmodel2"
         grammar={extendedClassModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={generatedContent}

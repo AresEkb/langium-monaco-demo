@@ -1,7 +1,7 @@
 import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
 import type { AstNode } from 'langium';
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { classModelGrammar } from '../classmodel/grammar';
@@ -29,7 +29,7 @@ export function AstPage(): ReactElement {
     <main>
       <DslEditor
         uri="file:///code"
-        language="dsl"
+        language="classmodel"
         grammar={classModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={classModelText}

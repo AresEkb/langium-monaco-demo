@@ -1,4 +1,4 @@
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { classModelGrammar } from '../classmodel/grammar';
@@ -26,7 +26,7 @@ export function ExtensionPage(): ReactElement {
       </div>
       <DslEditor
         uri="file:///code"
-        language="dsl"
+        language="classmodel"
         grammar={grammar}
         grammarExtension={grammarExtension}
         value={classModelText}

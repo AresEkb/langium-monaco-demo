@@ -1,6 +1,6 @@
 import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import { format as formatJsonDiff } from 'jsondiffpatch/formatters/html';
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { extendedClassModelGrammar } from '../classmodel/extendedGrammar';
@@ -27,7 +27,7 @@ export function ModelPage(): ReactElement {
     <main>
       <DslModelEditor
         uri="file:///code"
-        language="dsl"
+        language="classmodel"
         grammar={extendedClassModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={classModel}
@@ -37,7 +37,7 @@ export function ModelPage(): ReactElement {
       {model ? (
         <DslModelEditor
           uri="file:///code2"
-          language="dsl2"
+          language="classmodel2"
           grammar={extendedClassModelGrammar}
           grammarExtension={classModelGrammarExtension}
           value={model}

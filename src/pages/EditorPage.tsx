@@ -10,7 +10,7 @@ export function EditorPage(): ReactElement {
     <main>
       <DslEditor
         uri="file:///code"
-        language="dsl"
+        language="classmodel"
         grammar={classModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={classModelText}

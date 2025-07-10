@@ -1,4 +1,4 @@
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import { simplifiedClassModelGrammar } from '../classmodel/simplifiedGrammar';
@@ -13,7 +13,7 @@ export function GrammarPage(): ReactElement {
   return (
     <main>
       <DslGrammarEditor uri="file:///grammar" value={grammar} onChange={onGrammarChanged} />
-      <DslEditor uri="file:///code" value={simplifiedClassModelText} language="dsl" grammar={grammar} />
+      <DslEditor uri="file:///code" value={simplifiedClassModelText} language="classmodel" grammar={grammar} />
     </main>
   );
 }
