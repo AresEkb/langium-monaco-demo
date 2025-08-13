@@ -1,5 +1,5 @@
 import type { AstNode, Reference, ValueType } from 'langium';
-import { isAstNode, isReference } from 'langium';
+import { isAstNode } from 'langium';
 
 export type GrammarExtension = Record<string, Record<string, PropertyExtension>>;
 
@@ -28,7 +28,9 @@ export function isEnumLiteralAstNode(obj: unknown): obj is AstNode {
 }
 
 export function isReferenceAstNode(obj: unknown): obj is IdReference<IdAstNode> {
-  return isReference(obj);
+  // We don't use isReference or isMultiReference from Langium,
+  // because ASTs are serialized and they don't contain ref or items references
+  return typeof obj === 'object' && obj !== null && typeof (obj as Reference).$refText === 'string';
 }
 
 export function isValueType(obj: unknown): obj is ValueType {

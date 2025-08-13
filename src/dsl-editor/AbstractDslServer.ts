@@ -8,22 +8,18 @@ import type {
   LangiumDocument,
   ReferenceInfo,
   Scope,
-  ValueType} from 'langium';
-import {
-  DefaultScopeProvider,
-  DefaultValueConverter,
-  DocumentState,
-  MapScope
+  ValueType,
 } from 'langium';
+import { DefaultScopeProvider, DefaultValueConverter, DocumentState, MapScope } from 'langium';
 import { createServicesForGrammar } from 'langium/grammar';
-import type { CompletionContext , LangiumServices} from 'langium/lsp';
+import type { CompletionContext, LangiumServices } from 'langium/lsp';
 import { DefaultCompletionProvider, startLanguageServer } from 'langium/lsp';
 import { generateTextMate } from 'langium-cli/textmate';
-import type { Connection} from 'vscode-languageserver';
+import type { Connection } from 'vscode-languageserver';
 import { DiagnosticSeverity, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
 import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser';
 
-import type { GrammarExtension} from './GrammarExtension';
+import type { GrammarExtension } from './GrammarExtension';
 import { parseGrammarExtension } from './GrammarExtension';
 
 export interface DslSetValue {
@@ -62,6 +58,12 @@ export abstract class AbstractDslServer {
   async start(): Promise<void> {
     const { shared, serializer, Grammar } = await createServicesForGrammar({
       grammar: this._grammarString,
+      languageMetaData: {
+        languageId: this._language,
+        fileExtensions: [],
+        caseInsensitive: false,
+        mode: 'production',
+      },
       module: {
         parser: {
           ValueConverter: () => new DslValueConverter(this._grammarExtension),

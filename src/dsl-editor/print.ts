@@ -1,7 +1,7 @@
 import type { AstNode, Grammar } from 'langium';
-import { GrammarAST, isAstNode, isReference } from 'langium';
+import { GrammarAST, isAstNode } from 'langium';
 
-import { isValueType } from './GrammarExtension';
+import { isReferenceAstNode, isValueType } from './GrammarExtension';
 import type { GrammarExtension } from './GrammarExtension';
 
 class AstNodePropertyGetter {
@@ -33,6 +33,9 @@ export function printAst(node: AstNode, grammar: Grammar, grammarExtension?: Gra
   if (!rule) {
     throw new Error(`Rule not found for ${node.$type}`);
   }
+  if (GrammarAST.isInfixRule(rule)) {
+    throw new Error('Infix rules not supported yet');
+  }
   const result = printElement(new AstNodePropertyGetter(node), grammar, grammarExtension ?? {}, rule.definition);
   return indent(result?.trim().replace(/[ ]+$/gm, '') ?? '') + '\n';
 }
@@ -53,6 +56,9 @@ function printElement(
     return repeat(node, grammar, grammarExtension, element, printAssignment);
   }
   if (GrammarAST.isRuleCall(element)) {
+    if (GrammarAST.isInfixRule(element.rule.ref)) {
+      throw new Error('Infix rules not supported yet');
+    }
     if (element.rule.ref?.name === '_NL') {
       return '\n';
     }
@@ -170,7 +176,7 @@ function printAssignment(
     if (value === undefined) {
       return undefined;
     }
-    if (!isReference(value)) {
+    if (!isReferenceAstNode(value)) {
       throw new Error(`Expected cross-reference but got value with type ${typeof value}`);
     }
     return value.$refText;

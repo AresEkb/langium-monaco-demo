@@ -12,7 +12,7 @@ export default defineConfig({
         // The order of chunks is important
         manualChunks: {
           react: ['react', 'react-dom', 'react-router'],
-          langium: ['langium', 'langium-ast-helper', 'langium-railroad'],
+          langium: ['langium', 'langium-railroad'],
           jschardet: ['jschardet'],
           'vscode-lsp': ['vscode-languageserver-protocol', 'vscode-ws-jsonrpc'],
           'monaco-vscode-base-service-override': ['@codingame/monaco-vscode-base-service-override'],

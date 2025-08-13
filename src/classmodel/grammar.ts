@@ -1,4 +1,4 @@
-export const classModelGrammar = `grammar ClassModel
+export const classModelGrammar = `grammar CM
 
 entry ClassModel:
     Localization*
