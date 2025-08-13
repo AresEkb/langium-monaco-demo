@@ -114,6 +114,9 @@ function deserializeNode(
   if (!rule) {
     throw new Error(`Rule not found for ${type}`);
   }
+  if (GrammarAST.isInfixRule(rule)) {
+    throw new Error('Infix rules not supported yet');
+  }
   return {
     $id: node.id,
     $type: rule.name,
@@ -214,6 +217,9 @@ function findElement(element: GrammarAST.AbstractElement, name: string): Grammar
   }
   if (GrammarAST.isRuleCall(element)) {
     if (element.rule.ref) {
+      if (GrammarAST.isInfixRule(element.rule.ref)) {
+        throw new Error('Infix rules not supported yet');
+      }
       return findElement(element.rule.ref.definition, name);
     }
     return;
