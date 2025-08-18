@@ -12,13 +12,12 @@ export default defineConfig({
         // The order of chunks is important
         manualChunks: {
           react: ['react', 'react-dom', 'react-router'],
-          langium: ['langium', 'langium-railroad'],
+          langium: ['langium', 'langium-cli', 'langium-railroad'],
           jschardet: ['jschardet'],
           'vscode-lsp': ['vscode-languageserver-protocol', 'vscode-ws-jsonrpc'],
           'monaco-vscode-base-service-override': ['@codingame/monaco-vscode-base-service-override'],
           'monaco-vscode-configuration-service-override': ['@codingame/monaco-vscode-configuration-service-override'],
-          'monaco-vscode-editor-api': ['@codingame/monaco-vscode-editor-api'],
-          'monaco-vscode-api': ['@codingame/monaco-vscode-api'],
+          'monaco-vscode-api': ['@codingame/monaco-vscode-api', '@codingame/monaco-vscode-editor-api'],
           'monaco-vscode-extension-api': ['@codingame/monaco-vscode-extension-api'],
           'vscode-languageclient': ['vscode-languageclient'],
           'monaco-editor-wrapper': ['monaco-editor-wrapper'],

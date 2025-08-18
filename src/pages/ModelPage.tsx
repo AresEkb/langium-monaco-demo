@@ -13,8 +13,10 @@ import { useDebounced } from '../hooks/useDebounced';
 const jsonDiffPatch = createJsonDiffPatch({});
 
 export function ModelPage(): ReactElement {
-  const [model, setModel] = useState<EModel>();
-  const [modelDiff, setModelDiff] = useState<string>();
+  const [model, setModel] = useState<EModel>(classModel);
+  const [modelDiff, setModelDiff] = useState<string | undefined>(
+    formatJsonDiff(jsonDiffPatch.diff(undefined, classModel)),
+  );
 
   const onChange = useDebounced((value: EModel) => {
     setModel((previousModel) => {
@@ -23,11 +25,21 @@ export function ModelPage(): ReactElement {
     });
   }, 500);
 
+  // console.log(
+  //   JSON.stringify({
+  //     type: 'langium',
+  //     namespaces: classModel.ns,
+  //     grammar: extendedClassModelGrammar,
+  //     extension: classModelGrammarExtension,
+  //   }),
+  // );
+
   return (
     <main>
       <DslModelEditor
         uri="file:///code"
         language="classmodel"
+        namespaces={classModel.ns}
         grammar={extendedClassModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={classModel}
@@ -38,6 +50,7 @@ export function ModelPage(): ReactElement {
         <DslModelEditor
           uri="file:///code2"
           language="classmodel2"
+          namespaces={classModel.ns}
           grammar={extendedClassModelGrammar}
           grammarExtension={classModelGrammarExtension}
           value={model}

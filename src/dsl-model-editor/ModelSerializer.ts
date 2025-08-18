@@ -38,7 +38,7 @@ export class ModelSerializer {
       }
       return obj;
     }
-    return deserializeNode(model.content[0], getObject, Object.keys(model.ns)[0], options.grammar) as AstNode;
+    return deserializeNode(model.content[0], getObject, Object.keys(options.namespaces)[0], options.grammar) as AstNode;
   }
 }
 
@@ -48,6 +48,7 @@ export interface ModelSerializeOptions {
 }
 
 export interface ModelDeserializeOptions {
+  namespaces: Record<string, string>;
   grammar: Grammar;
   grammarExtension?: GrammarExtension;
 }
@@ -70,7 +71,7 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
         .filter(([name]) => !name.startsWith('$'))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         .map(([name, value]) => [name, serializeValue(value, getAstNode, namespacePrefix)])
-        .filter(([, value]) => value !== undefined),
+        .filter(([, value]) => value !== undefined && (!Array.isArray(value) || value.length)),
     ),
   };
 }
@@ -142,6 +143,9 @@ function deserializeValue(
   if (typeof node === 'string') {
     if (GrammarAST.isRuleCall(element)) {
       if (GrammarAST.isParserRule(element.rule.ref)) {
+        if (element.rule.ref.dataType) {
+          return node;
+        }
         return { $type: element.rule.ref.name + '__' + node };
       }
     }

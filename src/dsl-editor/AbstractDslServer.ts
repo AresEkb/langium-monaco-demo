@@ -11,22 +11,18 @@ import type {
   ValueType,
 } from 'langium';
 import { DefaultScopeProvider, DefaultValueConverter, DocumentState, MapScope } from 'langium';
+import { generateTextMate } from 'langium-cli/textmate';
 import { createServicesForGrammar } from 'langium/grammar';
 import type { CompletionContext, LangiumServices } from 'langium/lsp';
 import { DefaultCompletionProvider, startLanguageServer } from 'langium/lsp';
-import { generateTextMate } from 'langium-cli/textmate';
-import type { Connection } from 'vscode-languageserver';
-import { DiagnosticSeverity, NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import type { Connection, DataCallback, Disposable, Message } from 'vscode-languageserver';
+import { DiagnosticSeverity, NotificationType } from 'vscode-languageserver';
 import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser';
 
 import type { GrammarExtension } from './GrammarExtension';
 import { parseGrammarExtension } from './GrammarExtension';
 
-export interface DslSetValue {
-  uri: string;
-  value: string;
-}
-export const dslSetValueNotification: NotificationType<DslSetValue> = new NotificationType<DslSetValue>('dsl/SetValue');
+export const dslSetValueNotification: NotificationType<string> = new NotificationType<string>('dsl/SetValue');
 
 export abstract class AbstractDslServer {
   private _language: string;
@@ -40,19 +36,12 @@ export abstract class AbstractDslServer {
 
   constructor(language: string, grammar: string, grammarExtension?: string) {
     this._language = language;
-    const messageReader = new BrowserMessageReader(self);
-    const messageWriter = new BrowserMessageWriter(self);
+    const messageReader = new LoggingReader(self);
+    const messageWriter = new LoggingWriter(self);
     this._connection = createConnection(messageReader, messageWriter);
     this._grammarString = grammar;
     this._grammarExtension = parseGrammarExtension(grammarExtension);
-
-    this._connection.onNotification(dslSetValueNotification, (params) => {
-      void this._connection.workspace.applyEdit({
-        changes: {
-          [params.uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), params.value)],
-        },
-      });
-    });
+    this._connection.onNotification(dslSetValueNotification, this.setValue.bind(this));
   }
 
   async start(): Promise<void> {
@@ -130,12 +119,24 @@ export abstract class AbstractDslServer {
     return this._jsonSerializer;
   }
 
-  setValue(uri: string, value: string): void {
-    void this._connection.workspace.applyEdit({
-      changes: {
-        [uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), value)],
-      },
+  setValue(value: string): void {
+    void this._connection.sendNotification(dslSetValueNotification, value);
+  }
+}
+
+class LoggingReader extends BrowserMessageReader {
+  override listen(callback: DataCallback): Disposable {
+    return super.listen((msg) => {
+      // console.info('[client -> server]', msg);
+      callback(msg);
     });
+  }
+}
+
+class LoggingWriter extends BrowserMessageWriter {
+  override write(msg: Message): Promise<void> {
+    // console.info('[server -> client]', msg);
+    return super.write(msg);
   }
 }
 

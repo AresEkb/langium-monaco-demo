@@ -8,6 +8,7 @@ export function createConfig(
   content: string,
   language: string,
   textmateGrammar: string,
+  readOnly: boolean,
   connectionOptions: ConnectionConfigOptions,
 ): WrapperConfig {
   const languageGrammarUrl = language + '-grammar.json';
@@ -38,8 +39,9 @@ export function createConfig(
     vscodeApiConfig: {
       userConfiguration: {
         json: JSON.stringify({
-          'editor.wordBasedSuggestions': 'off',
           'editor.experimental.asyncTokenization': false,
+          'editor.quickSuggestions': false,
+          'editor.wordBasedSuggestions': 'off',
         }),
       },
     },
@@ -50,6 +52,9 @@ export function createConfig(
           enforceLanguageId: language,
           uri,
         },
+      },
+      editorOptions: {
+        readOnly,
       },
       monacoWorkerFactory: configureDefaultWorkerFactory,
     },

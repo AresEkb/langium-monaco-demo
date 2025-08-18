@@ -50,7 +50,6 @@ export const classModel: EModel = {
                   },
                 },
               ],
-              kind: 'Regular',
               name: 'User',
               properties: [
                 {
@@ -159,7 +158,6 @@ export const classModel: EModel = {
                   },
                 },
               ],
-              kind: 'Regular',
               name: 'Order',
               properties: [
                 {
@@ -197,7 +195,6 @@ export const classModel: EModel = {
                         },
                       },
                     ],
-                    kind: 'Association',
                     name: 'user',
                     target: '0197f429-e5e0-743b-9330-dfccbe50ea8a',
 
@@ -244,7 +241,6 @@ export const classModel: EModel = {
                   },
                 },
               ],
-              kind: 'Regular',
               name: 'OrderItem',
               properties: [
                 {
@@ -261,7 +257,6 @@ export const classModel: EModel = {
                         },
                       },
                     ],
-                    kind: 'Association',
                     name: 'order',
                     target: '0197f429-e5e1-777f-9508-b641ee62a5f5',
                     opposite: '0197f429-ed3a-7275-bd07-2d300a84c220',
@@ -284,7 +279,6 @@ export const classModel: EModel = {
                         },
                       },
                     ],
-                    kind: 'Association',
                     name: 'product',
                     target: '0197f429-e5e1-777f-9508-cdbcf6bc3c93',
 
@@ -392,7 +386,6 @@ export const classModel: EModel = {
                   },
                 },
               ],
-              kind: 'Regular',
               name: 'Book',
               generals: ['0197f429-e5e1-777f-9508-cdbcf6bc3c93'],
               properties: [
@@ -434,7 +427,6 @@ export const classModel: EModel = {
                   },
                 },
               ],
-              kind: 'Regular',
               name: 'Pen',
               generals: ['0197f429-e5e1-777f-9508-cdbcf6bc3c93'],
               properties: [

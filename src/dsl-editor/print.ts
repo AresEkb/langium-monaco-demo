@@ -1,8 +1,8 @@
 import type { AstNode, Grammar } from 'langium';
 import { GrammarAST, isAstNode } from 'langium';
 
-import { isReferenceAstNode, isValueType } from './GrammarExtension';
 import type { GrammarExtension } from './GrammarExtension';
+import { isReferenceAstNode, isValueType } from './GrammarExtension';
 
 class AstNodePropertyGetter {
   private node;
@@ -122,7 +122,7 @@ function printAssignment(
     if (GrammarAST.isParserRule(element.terminal.rule.ref)) {
       if (element.terminal.rule.ref.dataType) {
         if (!isValueType(value)) {
-          throw new Error('Expected a value type');
+          throw new Error(`Expected a value type for feature "${element.feature}"`);
         }
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const print = grammarExtension[element.terminal.rule.ref.name]?.value.print;

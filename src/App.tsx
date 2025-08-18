@@ -1,3 +1,4 @@
+import { closeSnackbar, SnackbarProvider } from 'notistack';
 import type { ReactElement } from 'react';
 import { HashRouter, NavLink, Route, Routes } from 'react-router';
 
@@ -46,6 +47,10 @@ export function App(): ReactElement {
         <Route path="extension" element={<ExtensionPage />} />
         <Route path="model" element={<ModelPage />} />
       </Routes>
+      <SnackbarProvider
+        autoHideDuration={10000}
+        action={(snackbarId) => <button onClick={() => closeSnackbar(snackbarId)}>Dismiss</button>}
+      />
     </HashRouter>
   );
 }

@@ -3,7 +3,7 @@ import { create as createJsonDiffPatch } from 'jsondiffpatch';
 import type { AstNode, LangiumDocument, ValueType } from 'langium';
 import { v7 as uuidv7 } from 'uuid';
 import type { Diagnostic } from 'vscode-languageserver';
-import { NotificationType, Range, TextEdit, uinteger } from 'vscode-languageserver';
+import { NotificationType } from 'vscode-languageserver';
 
 import { AbstractDslServer } from '../dsl-editor/AbstractDslServer';
 import type { GrammarExtension, IdAstNode } from '../dsl-editor/GrammarExtension';
@@ -32,7 +32,8 @@ export class DslModelServer extends AbstractDslServer {
   private namespaces: Record<string, string>;
   private modelSerializer: ModelSerializer;
   private jsonDiffPatch: DiffPatcher;
-  private asts: WeakMap<LangiumDocument, AstNode>;
+  private asts: Map<string, AstNode>;
+  private models: Map<string, string>;
 
   constructor(
     language: string,
@@ -48,30 +49,22 @@ export class DslModelServer extends AbstractDslServer {
         return name !== '$id';
       },
     });
-    this.asts = new WeakMap<LangiumDocument, AstNode>();
-
-    this.connection.onNotification(dslSetModelNotification, (params) => {
-      const ast = new ModelSerializer().deserialize(params.value, {
-        grammar: this.grammar,
-        grammarExtension: this.grammarExtension,
-      });
-      const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
-      const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
-      void this.connection.workspace.applyEdit({
-        changes: {
-          [params.uri]: [TextEdit.replace(Range.create(0, 0, uinteger.MAX_VALUE, 0), text)],
-        },
-      });
-    });
+    this.asts = new Map<string, AstNode>();
+    this.models = new Map<string, string>();
+    this.connection.onNotification(dslSetModelNotification, this.onSetModel.bind(this));
   }
 
   protected override onChange(document: LangiumDocument): void {
-    const oldAst = this.asts.get(document);
+    const uri = document.uri.toString();
+    const oldAst = this.asts.get(uri);
     const newAst = JSON.parse(this.jsonSerializer.serialize(document.parseResult.value, { refText: true })) as AstNode;
     const astDelta = this.jsonDiffPatch.diff(oldAst, newAst);
+    if (!astDelta) {
+      return;
+    }
     const updatedAst = this.jsonDiffPatch.patch(oldAst, astDelta) as AstNode;
     assignIds(updatedAst);
-    this.asts.set(document, updatedAst);
+    this.asts.set(uri, updatedAst);
 
     copyIds(updatedAst, document.parseResult.value);
     assignRefIds(document.parseResult.value);
@@ -81,23 +74,40 @@ export class DslModelServer extends AbstractDslServer {
       grammarExtension: this.grammarExtension,
     });
 
-    const params: DslModelChange = {
-      uri: document.uri.toString(),
-      model,
-      diagnostics: document.diagnostics ?? [],
-    };
+    const modelString = JSON.stringify(model, sortingReplacer);
+    if (this.models.get(uri) === modelString) {
+      return;
+    }
+    this.models.set(uri, modelString);
+
+    const params: DslModelChange = { uri, model, diagnostics: document.diagnostics ?? [] };
     void this.connection.sendNotification(dslModelChangeNotification, params);
   }
 
-  setModel(uri: string, value: EModel): void {
-    const ast = this.modelSerializer.deserialize(value, {
-      grammar: this.grammar,
-      grammarExtension: this.grammarExtension,
-    });
-    const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
-    const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
-    this.setValue(uri, text);
+  private onSetModel(params: DslSetModel) {
+    try {
+      const ast = new ModelSerializer().deserialize(params.value, {
+        namespaces: this.namespaces,
+        grammar: this.grammar,
+        grammarExtension: this.grammarExtension,
+      });
+      const denormalizedAst = transformNode(ast, this.grammarExtension, 'denormalize');
+      this.asts.set(params.uri, denormalizedAst);
+      this.models.set(params.uri, JSON.stringify(params.value, sortingReplacer));
+      const text = printAst(denormalizedAst, this.grammar, this.grammarExtension);
+      this.setValue(text);
+    } catch (e) {
+      // TODO Notify a user?
+      console.error(e);
+    }
   }
+}
+
+function sortingReplacer(_key: string, value: unknown): unknown {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return value;
+  }
+  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)));
 }
 
 function assignIds(node: unknown): void {
@@ -144,7 +154,7 @@ function copyIds(originalNode: unknown, node: unknown): void {
     for (const [name, value] of Object.entries(node)) {
       if (!name.startsWith('$')) {
         if (!(name in originalNode)) {
-          throw new Error();
+          throw new Error(`Property "${name}" not found`);
         }
         copyIds(originalNode[name as keyof typeof originalNode], value);
       }

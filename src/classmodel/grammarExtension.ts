@@ -1,4 +1,14 @@
 export const classModelGrammarExtension = `{
+  Class: {
+    kind: {
+      normalize(node) {
+        return node.kind?.$type !== 'ClassKind__Regular' ? node.kind : undefined;
+      },
+      denormalize(node) {
+        return node.kind ?? { '$type': 'ClassKind__Regular' };
+      },
+    },
+  },
   Attribute: {
     lower: {
       normalize(node) {
@@ -18,6 +28,14 @@ export const classModelGrammarExtension = `{
     },
   },
   Reference: {
+    kind: {
+      normalize(node) {
+        return node.kind?.$type !== 'ReferenceKind__Association' ? node.kind : undefined;
+      },
+      denormalize(node) {
+        return node.kind ?? { '$type': 'ReferenceKind__Association' };
+      },
+    },
     lower: {
       normalize(node) {
         return node.lower ?? 1;

@@ -12,6 +12,7 @@ export interface DslGrammarEditorProps {
   uri: string;
   value?: string;
   onChange?: (value: string) => void;
+  readOnly?: boolean;
 }
 
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
@@ -24,7 +25,7 @@ export function DslGrammarEditor(props: DslGrammarEditorProps): ReactElement {
       type: 'module',
     });
     setConfig(
-      createConfig(props.uri, props.value ?? '', 'langium', dslGrammarTextmate, {
+      createConfig(props.uri, props.value ?? '', 'langium', dslGrammarTextmate, props.readOnly ?? false, {
         $type: 'WorkerDirect',
         worker,
       }),
@@ -36,7 +37,7 @@ export function DslGrammarEditor(props: DslGrammarEditorProps): ReactElement {
       }, 5000);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.uri]);
+  }, [props.readOnly, props.uri]);
 
   const onTextChanged = useCallback(
     (textContents: TextContents) => {

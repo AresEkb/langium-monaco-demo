@@ -1,5 +1,5 @@
 import type { AstNode, LangiumDocument } from 'langium';
-import type { Diagnostic} from 'vscode-languageserver/browser';
+import type { Diagnostic } from 'vscode-languageserver/browser';
 import { NotificationType } from 'vscode-languageserver/browser';
 
 import { AbstractDslServer } from './AbstractDslServer';
