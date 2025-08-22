@@ -18,13 +18,15 @@ export class ModelSerializer {
       }
       return obj;
     }
+    const prefixes = new Set([Object.keys(options.namespaces)[0]]);
+    const content = [serializeNode(node, getAstNode, prefixes)];
     return {
       json: {
         version: '1.0',
         encoding: 'utf-8',
       },
-      ns: options.namespaces,
-      content: [serializeNode(node, getAstNode, Object.keys(options.namespaces)[0])],
+      ns: Object.fromEntries(Object.entries(options.namespaces).filter(([name]) => prefixes.has(name))),
+      content,
     };
   }
 
@@ -53,12 +55,20 @@ export interface ModelDeserializeOptions {
   grammarExtension?: GrammarExtension;
 }
 
-function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, namespacePrefix: string): EObject {
+function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, prefixes: Set<string>): EObject {
+  let eClass: string;
   const pos = node.$type.indexOf('_');
-  const eClass =
-    pos >= 0
-      ? node.$type.substring(0, pos).toLowerCase() + ':' + node.$type.substring(pos + 1)
-      : namespacePrefix + ':' + node.$type;
+  if (pos >= 0) {
+    const prefix = node.$type.substring(0, pos).toLowerCase();
+    prefixes.add(prefix);
+    eClass = prefix + ':' + node.$type.substring(pos + 1);
+  } else {
+    const defaultPrefix = prefixes.values().next().value;
+    if (!defaultPrefix) {
+      throw new Error();
+    }
+    eClass = defaultPrefix + ':' + node.$type;
+  }
   if (node.$id === undefined) {
     throw new Error();
   }
@@ -70,7 +80,7 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
       Object.entries(node)
         .filter(([name]) => !name.startsWith('$'))
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        .map(([name, value]) => [name, serializeValue(value, getAstNode, namespacePrefix)])
+        .map(([name, value]) => [name, serializeValue(value, getAstNode, prefixes)])
         .filter(([, value]) => value !== undefined && (!Array.isArray(value) || value.length)),
     ),
   };
@@ -79,20 +89,22 @@ function serializeNode(node: IdAstNode, getAstNode: (id: string) => IdAstNode, n
 function serializeValue(
   node: ValueType | undefined,
   getAstNode: (id: string) => IdAstNode,
-  namespacePrefix: string,
+  prefixes: Set<string>,
 ): EFeatureType | EFeatureType[] | undefined {
   if (node === undefined || typeof node === 'string' || typeof node === 'number' || typeof node === 'boolean') {
     return node;
   }
   if (Array.isArray(node)) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return node.map((value) => serializeValue(value, getAstNode, namespacePrefix) as EFeatureType);
+    return node.map((value) => serializeValue(value, getAstNode, prefixes) as EFeatureType);
   }
   if (isEntityAstNode(node)) {
-    return serializeNode(node, getAstNode, namespacePrefix);
+    return serializeNode(node, getAstNode, prefixes);
   }
   if (isEnumLiteralAstNode(node)) {
-    return node.$type.substring(node.$type.indexOf('__') + 2);
+    const pos = node.$type.indexOf('__');
+    prefixes.add(node.$type.substring(pos));
+    return node.$type.substring(pos + 2);
   }
   if (isReferenceAstNode(node)) {
     if (node.$id === undefined) {

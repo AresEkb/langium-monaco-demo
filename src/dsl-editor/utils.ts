@@ -1,4 +1,4 @@
-import { VariantType } from 'notistack';
+import type { VariantType } from 'notistack';
 import { MessageType } from 'vscode-languageserver-protocol';
 
 export interface DslWorker {

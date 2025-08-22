@@ -11,10 +11,10 @@ import type {
   ValueType,
 } from 'langium';
 import { DefaultScopeProvider, DefaultValueConverter, DocumentState, MapScope } from 'langium';
-import { generateTextMate } from 'langium-cli/textmate';
 import { createServicesForGrammar } from 'langium/grammar';
 import type { CompletionContext, LangiumServices } from 'langium/lsp';
 import { DefaultCompletionProvider, startLanguageServer } from 'langium/lsp';
+import { generateTextMate } from 'langium-cli/textmate';
 import type { Connection, DataCallback, Disposable, Message } from 'vscode-languageserver';
 import { DiagnosticSeverity, NotificationType } from 'vscode-languageserver';
 import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser';
