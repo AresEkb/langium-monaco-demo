@@ -46,18 +46,14 @@ export function ModelPage(): ReactElement {
         onChange={onChange}
       />
       <div className="json-diff" dangerouslySetInnerHTML={{ __html: modelDiff ?? '' }} />
-      {model ? (
-        <DslModelEditor
-          uri="file:///code2"
-          language="classmodel2"
-          namespaces={classModel.ns}
-          grammar={extendedClassModelGrammar}
-          grammarExtension={classModelGrammarExtension}
-          value={model}
-        />
-      ) : (
-        <div />
-      )}
+      <DslModelEditor
+        uri="file:///code2"
+        language="classmodel2"
+        namespaces={classModel.ns}
+        grammar={extendedClassModelGrammar}
+        grammarExtension={classModelGrammarExtension}
+        value={model}
+      />
     </main>
   );
 }

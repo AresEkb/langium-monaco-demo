@@ -8,6 +8,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     rollupOptions: {
+      external: ['fs-extra', 'path', 'os', 'node:fs', 'node:path', 'node:readline', 'node:url', 'node:worker_threads'],
       output: {
         // The order of chunks is important
         manualChunks: {
