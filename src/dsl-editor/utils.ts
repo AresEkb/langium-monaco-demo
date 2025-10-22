@@ -6,6 +6,22 @@ export interface DslWorker {
   textmateGrammar: string;
 }
 
+export interface DslWorkerStartedMessage {
+  type: 'started';
+  textmateGrammar: string;
+}
+
+export function isDslWorkerStartedMessage(data: unknown): data is DslWorkerStartedMessage {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'type' in data &&
+    data.type === 'started' &&
+    'textmateGrammar' in data &&
+    typeof data.textmateGrammar === 'string'
+  );
+}
+
 export function toVariantType(type: MessageType): VariantType {
   switch (type) {
     case MessageType.Error:

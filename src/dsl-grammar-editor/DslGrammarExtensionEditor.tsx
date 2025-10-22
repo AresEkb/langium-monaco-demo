@@ -1,9 +1,10 @@
-import { LogLevel } from '@codingame/monaco-vscode-api';
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
-import type { TextContents, WrapperConfig } from 'monaco-editor-wrapper';
-import { configureDefaultWorkerFactory } from 'monaco-editor-wrapper/workers/workerLoaders';
+import type { TextContents } from 'monaco-languageclient/editorApp';
+import { configureDefaultWorkerFactory } from 'monaco-languageclient/workerFactory';
 import type { ReactElement } from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
+
+import type { MonacoEditorReactConfig } from '../dsl-editor/config';
 
 export interface DslGrammarExtensionEditorProps {
   className?: string;
@@ -15,7 +16,7 @@ export interface DslGrammarExtensionEditorProps {
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
 export function DslGrammarExtensionEditor(props: DslGrammarExtensionEditorProps): ReactElement {
-  const [config, setConfig] = useState<WrapperConfig>();
+  const [config, setConfig] = useState<MonacoEditorReactConfig>();
 
   useEffect(() => {
     setConfig(createConfig(props.uri, props.value ?? ''));
@@ -37,45 +38,54 @@ export function DslGrammarExtensionEditor(props: DslGrammarExtensionEditorProps)
   }
 
   return (
-    <MemoizedMonacoEditorReactComp className={props.className} wrapperConfig={config} onTextChanged={onTextChanged} />
+    <MemoizedMonacoEditorReactComp
+      className={props.className}
+      vscodeApiConfig={config.vscodeApiConfig}
+      languageClientConfig={config.languageClientConfig}
+      editorAppConfig={config.editorAppConfig}
+      onTextChanged={onTextChanged}
+    />
   );
 }
 
-function createConfig(uri: string, content: string): WrapperConfig {
+function createConfig(uri: string, content: string): MonacoEditorReactConfig {
   const language = 'json';
   const languageGrammarUrl = language + '-grammar.json';
   const textmateGrammar = '';
   return {
-    $type: 'extended',
-    logLevel: LogLevel.Warning,
-    extensions: [
-      {
-        config: {
-          name: language,
-          publisher: 'Example.com',
-          version: '1.0.0',
-          engines: { vscode: '*' },
-          contributes: {
-            languages: [{ id: language }],
-            grammars: [
-              {
-                language,
-                scopeName: 'source.' + language,
-                path: languageGrammarUrl,
-              },
-            ],
-          },
-        },
-        filesOrContents: new Map<string, string>([[languageGrammarUrl, textmateGrammar]]),
-      },
-    ],
     vscodeApiConfig: {
+      $type: 'extended',
+      viewsConfig: {
+        $type: 'EditorService',
+      },
       userConfiguration: {
         json: JSON.stringify({
-          'editor.wordBasedSuggestions': 'off',
           'editor.experimental.asyncTokenization': false,
+          'editor.wordBasedSuggestions': 'off',
         }),
       },
+      extensions: [
+        {
+          config: {
+            name: language,
+            publisher: 'Example.com',
+            version: '1.0.0',
+            engines: { vscode: '*' },
+            contributes: {
+              languages: [{ id: language }],
+              grammars: [
+                {
+                  language,
+                  scopeName: 'source.' + language,
+                  path: languageGrammarUrl,
+                },
+              ],
+            },
+          },
+          filesOrContents: new Map<string, string>([[languageGrammarUrl, textmateGrammar]]),
+        },
+      ],
+      monacoWorkerFactory: configureDefaultWorkerFactory,
     },
     editorAppConfig: {
       codeResources: {
@@ -85,7 +95,6 @@ function createConfig(uri: string, content: string): WrapperConfig {
           uri,
         },
       },
-      monacoWorkerFactory: configureDefaultWorkerFactory,
     },
   };
 }

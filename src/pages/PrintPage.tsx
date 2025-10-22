@@ -48,7 +48,7 @@ export function PrintPage(): ReactElement {
       <div className="json-diff" dangerouslySetInnerHTML={{ __html: astDiff ?? '' }} />
       <DslEditor
         uri="file:///code2"
-        language="classmodel2"
+        language="classmodel"
         grammar={extendedClassModelGrammar}
         grammarExtension={classModelGrammarExtension}
         value={generatedContent}

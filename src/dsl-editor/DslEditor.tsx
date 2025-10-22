@@ -1,8 +1,10 @@
+import type { editor } from '@codingame/monaco-vscode-editor-api';
 import { Range } from '@codingame/monaco-vscode-editor-api';
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
 import type { AstNode } from 'langium';
-import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from 'monaco-editor-wrapper';
 import type { MonacoLanguageClient } from 'monaco-languageclient';
+import type { EditorApp } from 'monaco-languageclient/editorApp';
+import type { LanguageClientsManager } from 'monaco-languageclient/lcwrapper';
 import { enqueueSnackbar } from 'notistack';
 import type { ReactElement } from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
@@ -11,9 +13,10 @@ import { LogMessageNotification } from 'vscode-languageserver-protocol';
 import { dslSetValueNotification } from './AbstractDslServer';
 import type { DslDocumentChange } from './DslServer';
 import { dslDocumentChangeNotification } from './DslServer';
+import type { MonacoEditorReactConfig } from './config';
 import { createConfig } from './config';
 import type { DslWorker } from './utils';
-import { toVariantType } from './utils';
+import { isDslWorkerStartedMessage, toVariantType } from './utils';
 
 export interface DslEditorProps {
   className?: string;
@@ -36,7 +39,8 @@ export interface DslEditorValue {
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
 export function DslEditor(props: DslEditorProps): ReactElement {
-  const [config, setConfig] = useState<WrapperConfig>();
+  const [config, setConfig] = useState<MonacoEditorReactConfig>();
+  const [editor, setEditor] = useState<editor.IStandaloneCodeEditor>();
   const [client, setClient] = useState<MonacoLanguageClient>();
 
   useEffect(() => {
@@ -81,9 +85,45 @@ export function DslEditor(props: DslEditorProps): ReactElement {
     void client?.sendNotification(dslSetValueNotification, props.value ?? '');
   }, [client, props.uri, props.value]);
 
-  const onLoad = useCallback(
-    (wrapper: MonacoEditorLanguageClientWrapper) => {
-      const newClient = wrapper.getLanguageClient(props.language);
+  useEffect(() => {
+    if (!client || !editor) {
+      return;
+    }
+    client.onNotification(dslSetValueNotification, (value) => {
+      const selections = editor.getSelections();
+      editor
+        .getModel()
+        ?.pushEditOperations(
+          selections,
+          [{ range: new Range(0, 0, Number.MAX_SAFE_INTEGER, 0), text: value }],
+          () => selections,
+        );
+      if (selections) {
+        editor.setSelections(selections);
+      }
+    });
+
+    const onChange = props.onChange;
+    if (onChange) {
+      client.onNotification(dslDocumentChangeNotification, (response: DslDocumentChange) => {
+        if (response.uri === props.uri) {
+          onChange({ text: response.text, ast: response.ast });
+        }
+      });
+    }
+  }, [client, editor, props.onChange, props.uri]);
+
+  const onEditorStartDone = useCallback((editorApp?: EditorApp) => {
+    const newEditor = editorApp?.getEditor();
+    if (!newEditor) {
+      throw new Error();
+    }
+    setEditor(newEditor);
+  }, []);
+
+  const onLanguageClientsStartDone = useCallback(
+    (lcsManager?: LanguageClientsManager) => {
+      const newClient = lcsManager?.getLanguageClient(props.language);
       if (!newClient) {
         throw new Error();
       }
@@ -91,42 +131,24 @@ export function DslEditor(props: DslEditorProps): ReactElement {
       newClient.onNotification(LogMessageNotification.type, (params) => {
         enqueueSnackbar(params.message, { variant: toVariantType(params.type) });
       });
-
-      const editor = wrapper.getEditor();
-      if (!editor) {
-        throw new Error();
-      }
-      newClient.onNotification(dslSetValueNotification, (value) => {
-        const selections = editor.getSelections();
-        editor
-          .getModel()
-          ?.pushEditOperations(
-            selections,
-            [{ range: new Range(0, 0, Number.MAX_SAFE_INTEGER, 0), text: value }],
-            () => selections,
-          );
-        if (selections) {
-          editor.setSelections(selections);
-        }
-      });
-
-      const onChange = props.onChange;
-      if (onChange) {
-        newClient.onNotification(dslDocumentChangeNotification, (response: DslDocumentChange) => {
-          if (response.uri === props.uri) {
-            onChange({ text: response.text, ast: response.ast });
-          }
-        });
-      }
     },
-    [props.language, props.onChange, props.uri],
+    [props.language],
   );
 
   if (!config) {
     return <div />;
   }
 
-  return <MemoizedMonacoEditorReactComp className={props.className} wrapperConfig={config} onLoad={onLoad} />;
+  return (
+    <MemoizedMonacoEditorReactComp
+      className={props.className}
+      vscodeApiConfig={config.vscodeApiConfig}
+      languageClientConfig={config.languageClientConfig}
+      editorAppConfig={config.editorAppConfig}
+      onEditorStartDone={onEditorStartDone}
+      onLanguageClientsStartDone={onLanguageClientsStartDone}
+    />
+  );
 }
 
 function createWorker(
@@ -139,9 +161,7 @@ function createWorker(
   return new Promise((resolve, reject) => {
     const worker = new Worker(new URL('./DslEditorWorker.js', import.meta.url), { type: 'module' });
     worker.onmessage = (event) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (event.data.type === 'started') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      if (isDslWorkerStartedMessage(event.data)) {
         resolve({ worker, textmateGrammar: event.data.textmateGrammar });
       }
     };

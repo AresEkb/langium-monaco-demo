@@ -1,8 +1,9 @@
 import { MonacoEditorReactComp } from '@typefox/monaco-editor-react';
-import type { TextContents, WrapperConfig } from 'monaco-editor-wrapper';
+import type { TextContents } from 'monaco-languageclient/editorApp';
 import type { ReactElement } from 'react';
 import { memo, useCallback, useEffect, useState } from 'react';
 
+import type { MonacoEditorReactConfig } from '../dsl-editor/config';
 import { createConfig } from '../dsl-editor/config';
 
 import { dslGrammarTextmate } from './dslGrammarTextmate';
@@ -18,7 +19,7 @@ export interface DslGrammarEditorProps {
 const MemoizedMonacoEditorReactComp = memo(MonacoEditorReactComp);
 
 export function DslGrammarEditor(props: DslGrammarEditorProps): ReactElement {
-  const [config, setConfig] = useState<WrapperConfig>();
+  const [config, setConfig] = useState<MonacoEditorReactConfig>();
 
   useEffect(() => {
     let worker: Worker | undefined = new Worker(new URL('./DslGrammarEditorWorker.js', import.meta.url), {
@@ -54,6 +55,12 @@ export function DslGrammarEditor(props: DslGrammarEditorProps): ReactElement {
   }
 
   return (
-    <MemoizedMonacoEditorReactComp className={props.className} wrapperConfig={config} onTextChanged={onTextChanged} />
+    <MemoizedMonacoEditorReactComp
+      className={props.className}
+      vscodeApiConfig={config.vscodeApiConfig}
+      languageClientConfig={config.languageClientConfig}
+      editorAppConfig={config.editorAppConfig}
+      onTextChanged={onTextChanged}
+    />
   );
 }

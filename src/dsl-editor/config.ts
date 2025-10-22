@@ -1,7 +1,14 @@
-import { LogLevel } from '@codingame/monaco-vscode-api';
-import type { WrapperConfig } from 'monaco-editor-wrapper';
-import { configureDefaultWorkerFactory } from 'monaco-editor-wrapper/workers/workerLoaders';
-import type { ConnectionConfigOptions } from 'monaco-languageclient';
+import type { ConnectionConfigOptions } from 'monaco-languageclient/common';
+import type { EditorAppConfig } from 'monaco-languageclient/editorApp';
+import type { LanguageClientConfig } from 'monaco-languageclient/lcwrapper';
+import type { MonacoVscodeApiConfig } from 'monaco-languageclient/vscodeApiWrapper';
+import { configureDefaultWorkerFactory } from 'monaco-languageclient/workerFactory';
+
+export interface MonacoEditorReactConfig {
+  vscodeApiConfig: MonacoVscodeApiConfig;
+  languageClientConfig?: LanguageClientConfig;
+  editorAppConfig: EditorAppConfig;
+}
 
 export function createConfig(
   uri: string,
@@ -10,39 +17,51 @@ export function createConfig(
   textmateGrammar: string,
   readOnly: boolean,
   connectionOptions: ConnectionConfigOptions,
-): WrapperConfig {
+): MonacoEditorReactConfig {
   const languageGrammarUrl = language + '-grammar.json';
   return {
-    $type: 'extended',
-    logLevel: LogLevel.Warning,
-    extensions: [
-      {
-        config: {
-          name: language,
-          publisher: 'Example.com',
-          version: '1.0.0',
-          engines: { vscode: '*' },
-          contributes: {
-            languages: [{ id: language }],
-            grammars: [
-              {
-                language,
-                scopeName: 'source.' + language,
-                path: languageGrammarUrl,
-              },
-            ],
-          },
-        },
-        filesOrContents: new Map<string, string>([[languageGrammarUrl, textmateGrammar]]),
-      },
-    ],
     vscodeApiConfig: {
+      $type: 'extended',
+      viewsConfig: {
+        $type: 'EditorService',
+      },
       userConfiguration: {
         json: JSON.stringify({
           'editor.experimental.asyncTokenization': false,
           'editor.quickSuggestions': false,
           'editor.wordBasedSuggestions': 'off',
         }),
+      },
+      extensions: [
+        {
+          config: {
+            name: language,
+            publisher: 'Example.com',
+            version: '1.0.0',
+            engines: { vscode: '*' },
+            contributes: {
+              languages: [{ id: language }],
+              grammars: [
+                {
+                  language,
+                  scopeName: 'source.' + language,
+                  path: languageGrammarUrl,
+                },
+              ],
+            },
+          },
+          filesOrContents: new Map<string, string>([[languageGrammarUrl, textmateGrammar]]),
+        },
+      ],
+      monacoWorkerFactory: configureDefaultWorkerFactory,
+    },
+    languageClientConfig: {
+      languageId: language,
+      connection: {
+        options: connectionOptions,
+      },
+      clientOptions: {
+        documentSelector: [language],
       },
     },
     editorAppConfig: {
@@ -55,19 +74,6 @@ export function createConfig(
       },
       editorOptions: {
         readOnly,
-      },
-      monacoWorkerFactory: configureDefaultWorkerFactory,
-    },
-    languageClientConfigs: {
-      configs: {
-        [language]: {
-          clientOptions: {
-            documentSelector: [language],
-          },
-          connection: {
-            options: connectionOptions,
-          },
-        },
       },
     },
   };

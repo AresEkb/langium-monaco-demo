@@ -21,7 +21,6 @@ export default defineConfig({
           'monaco-vscode-api': ['@codingame/monaco-vscode-api', '@codingame/monaco-vscode-editor-api'],
           'monaco-vscode-extension-api': ['@codingame/monaco-vscode-extension-api'],
           'vscode-languageclient': ['vscode-languageclient'],
-          'monaco-editor-wrapper': ['monaco-editor-wrapper'],
         },
       },
     },
